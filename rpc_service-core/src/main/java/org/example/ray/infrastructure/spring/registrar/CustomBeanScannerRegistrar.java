@@ -1,0 +1,56 @@
+package org.example.ray.infrastructure.spring.registrar;
+
+import lombok.extern.slf4j.Slf4j;
+
+import org.example.ray.annotation.RpcConsumer;
+import org.example.ray.annotation.RpcProvider;
+import org.example.ray.annotation.SimpleRpcApplication;
+import org.example.ray.infrastructure.spring.scanner.RpcBeanScanner;
+import org.springframework.beans.factory.support.BeanDefinitionRegistry;
+import org.springframework.context.ResourceLoaderAware;
+import org.springframework.context.annotation.ImportBeanDefinitionRegistrar;
+import org.springframework.core.annotation.AnnotationAttributes;
+import org.springframework.core.io.ResourceLoader;
+import org.springframework.core.type.AnnotationMetadata;
+
+/**
+ * @author zhoulei
+ * @create 2023/5/16
+ * @description: Custom registrar for scanning and registering annotated beans
+ */
+@Slf4j
+public class CustomBeanScannerRegistrar implements ImportBeanDefinitionRegistrar, ResourceLoaderAware {
+
+    private ResourceLoader resourceLoader;
+
+    private static final String API_SCAN_PARAM = "basePackage";
+
+    @Override
+    public void registerBeanDefinitions(AnnotationMetadata importingClassMetadata, BeanDefinitionRegistry registry) {
+        //get the scan annotation and the bean package to be scanned
+        AnnotationAttributes annotationAttributes = AnnotationAttributes.fromMap(importingClassMetadata.getAnnotationAttributes(SimpleRpcApplication.class.getName()));
+        String[] scanBasePackages = new String[0];
+        if (annotationAttributes != null) {
+            scanBasePackages = annotationAttributes.getStringArray(API_SCAN_PARAM);
+        }
+        //user doesn't specify the package to scan,use the Application base package
+        if (scanBasePackages.length == 0) {
+            scanBasePackages = new String[]{((org.springframework.core.type.StandardAnnotationMetadata) importingClassMetadata).getIntrospectedClass().getPackage().getName()};
+        }
+        log.info("scanning packages: [{}]", (Object) scanBasePackages);
+        //scan the package and register the bean
+        RpcBeanScanner rpcConsumerBeanScanner = new RpcBeanScanner(registry, RpcConsumer.class);
+        RpcBeanScanner rpcProviderBeanScanner = new RpcBeanScanner(registry, RpcProvider.class);
+        if (resourceLoader != null) {
+            rpcConsumerBeanScanner.setResourceLoader(resourceLoader);
+            rpcProviderBeanScanner.setResourceLoader(resourceLoader);
+        }
+        log.info("scanning RpcConsumer annotated beans end");
+    }
+
+    @Override
+    public void setResourceLoader(ResourceLoader resourceLoader) {
+        this.resourceLoader = resourceLoader;
+    }
+
+}
