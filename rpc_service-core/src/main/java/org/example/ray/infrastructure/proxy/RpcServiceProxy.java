@@ -4,6 +4,7 @@ import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
 import java.util.UUID;
+import java.util.concurrent.CompletableFuture;
 
 import org.example.ray.domain.RpcRequest;
 import org.example.ray.domain.RpcResponse;
@@ -43,19 +44,16 @@ public class RpcServiceProxy implements InvocationHandler {
             .build();
 
         RpcResponse<Object> rpcResponse = null;
-        // todo: 2023/5/16 implementation
-        // if (rpcRequestTransport instanceof NettyRpcClient) {
-        // CompletableFuture<RpcResponse<Object>> completableFuture =
-        // (CompletableFuture<RpcResponse<Object>>)
-        // rpcRequestTransport.sendRpcRequest(rpcRequest);
-        // rpcResponse = completableFuture.get();
-        // }
-        // if (rpcRequestTransport instanceof SocketRpcClient) {
-        // rpcResponse = (RpcResponse<Object>)
-        // rpcRequestTransport.sendRpcRequest(rpcRequest);
-        // }
-        // this.check(rpcResponse, rpcRequest);
-        // return rpcResponse.getData();
+        Object o = sendingServiceAdapter.sendRpcRequest(rpcRequest);
+
+        CompletableFuture<RpcResponse<Object>> completableFuture =
+            (CompletableFuture<RpcResponse<Object>>)sendingServiceAdapter.sendRpcRequest(rpcRequest);
+        try {
+            rpcResponse = completableFuture.get();
+            return rpcResponse.getData();
+        } catch (Exception e) {
+            log.error("occur exception:", e);
+        }
         return null;
     }
 
@@ -64,6 +62,6 @@ public class RpcServiceProxy implements InvocationHandler {
      */
     @SuppressWarnings("unchecked")
     public <T> T getProxy(Class<T> clazz) {
-        return (T) Proxy.newProxyInstance(clazz.getClassLoader(), new Class<?>[]{clazz}, this);
+        return (T)Proxy.newProxyInstance(clazz.getClassLoader(), new Class<?>[] {clazz}, this);
     }
 }
