@@ -1,4 +1,4 @@
-package org.example.ray.infrastructure.adapter.netty;
+package org.example.ray.infrastructure.netty.client;
 
 import io.netty.channel.Channel;
 import lombok.extern.slf4j.Slf4j;

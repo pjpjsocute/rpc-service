@@ -6,9 +6,11 @@ import org.example.ray.infrastructure.adapter.RpcServiceRegistryAdapter;
 import org.example.ray.infrastructure.adapter.impl.RpcSendingServiceAdapterImpl;
 import org.example.ray.infrastructure.adapter.impl.RpcServiceFindingAdapterImpl;
 import org.example.ray.infrastructure.adapter.impl.RpcServiceRegistryAdapterImpl;
-import org.example.ray.infrastructure.adapter.netty.AddressChannelManager;
-import org.example.ray.infrastructure.adapter.netty.WaitingProcess;
+import org.example.ray.infrastructure.netty.NettyRpcClientHandler;
+import org.example.ray.infrastructure.netty.client.AddressChannelManager;
+import org.example.ray.infrastructure.netty.client.WaitingProcess;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 
 /**
@@ -17,6 +19,7 @@ import org.springframework.context.annotation.Configuration;
  * @description:
  */
 @Configuration
+@ComponentScan("org.example.ray")
 public class AutoConfiguration {
 
     @Bean
@@ -29,22 +32,22 @@ public class AutoConfiguration {
         return new AddressChannelManager();
     }
 
-    @Bean
-    public RpcServiceRegistryAdapter rpcServiceRegistryAdapter(){
-        return new RpcServiceRegistryAdapterImpl();
-    }
-
-    @Bean
-    public RpcServiceFindingAdapter rpcServiceFindingAdapter(){
-        return new RpcServiceFindingAdapterImpl();
-    }
-
-    @Bean
-    public RpcSendingServiceAdapter rpcSendingServiceAdapter(
-            WaitingProcess waitingProcess,RpcServiceFindingAdapter findingAdapter,AddressChannelManager addressChannelManager
-    ){
-        return new RpcSendingServiceAdapterImpl(findingAdapter, waitingProcess, addressChannelManager);
-    }
+//    @Bean
+//    public RpcServiceRegistryAdapter rpcServiceRegistryAdapter(){
+//        return new RpcServiceRegistryAdapterImpl();
+//    }
+//
+//    @Bean
+//    public RpcServiceFindingAdapter rpcServiceFindingAdapter(){
+//        return new RpcServiceFindingAdapterImpl();
+//    }
+//
+//    @Bean
+//    public RpcSendingServiceAdapter rpcSendingServiceAdapter(
+//            WaitingProcess waitingProcess, RpcServiceFindingAdapter findingAdapter, AddressChannelManager addressChannelManager, NettyRpcClientHandler nettyRpcClientHandler
+//    ){
+//        return new RpcSendingServiceAdapterImpl(findingAdapter, waitingProcess, addressChannelManager, nettyRpcClientHandler);
+//    }
 
 
 }

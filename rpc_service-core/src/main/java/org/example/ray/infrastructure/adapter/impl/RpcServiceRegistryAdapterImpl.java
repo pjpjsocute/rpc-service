@@ -6,6 +6,7 @@ import org.example.ray.domain.RpcRequest;
 import org.example.ray.domain.RpcServiceConfig;
 import org.example.ray.infrastructure.adapter.RpcSendingServiceAdapter;
 import org.example.ray.infrastructure.adapter.RpcServiceRegistryAdapter;
+import org.springframework.stereotype.Component;
 
 /**
  * @author zhoulei
@@ -13,6 +14,7 @@ import org.example.ray.infrastructure.adapter.RpcServiceRegistryAdapter;
  * @description: Registration service for registration into zk
  * todo: wait for the implementation of the registration center
  */
+@Component
 public class RpcServiceRegistryAdapterImpl implements RpcServiceRegistryAdapter {
 
 

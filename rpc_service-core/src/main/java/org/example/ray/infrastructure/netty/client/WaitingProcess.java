@@ -1,4 +1,4 @@
-package org.example.ray.infrastructure.adapter.netty;
+package org.example.ray.infrastructure.netty.client;
 
 import org.example.ray.domain.RpcResponse;
 

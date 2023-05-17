@@ -4,6 +4,7 @@ import java.net.InetSocketAddress;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.TimeUnit;
 
+import org.example.ray.constants.RpcConstants;
 import org.example.ray.domain.RpcData;
 import org.example.ray.domain.RpcRequest;
 import org.example.ray.domain.RpcResponse;
@@ -11,11 +12,12 @@ import org.example.ray.domain.enums.CompressTypeEnum;
 import org.example.ray.domain.enums.SerializationTypeEnum;
 import org.example.ray.infrastructure.adapter.RpcSendingServiceAdapter;
 import org.example.ray.infrastructure.adapter.RpcServiceFindingAdapter;
-import org.example.ray.infrastructure.adapter.netty.AddressChannelManager;
-import org.example.ray.infrastructure.adapter.netty.NettyRpcClientHandler;
-import org.example.ray.infrastructure.adapter.netty.RpcMessageDecoder;
-import org.example.ray.infrastructure.adapter.netty.RpcMessageEncoder;
-import org.example.ray.infrastructure.adapter.netty.WaitingProcess;
+import org.example.ray.infrastructure.netty.NettyRpcClientHandler;
+import org.example.ray.infrastructure.netty.RpcMessageDecoder;
+import org.example.ray.infrastructure.netty.RpcMessageEncoder;
+import org.example.ray.infrastructure.netty.client.AddressChannelManager;
+import org.example.ray.infrastructure.netty.client.WaitingProcess;
+import org.springframework.stereotype.Component;
 
 import io.netty.bootstrap.Bootstrap;
 import io.netty.channel.Channel;
@@ -38,6 +40,7 @@ import lombok.extern.slf4j.Slf4j;
  * @description:
  */
 @Slf4j
+@Component
 public class RpcSendingServiceAdapterImpl implements RpcSendingServiceAdapter {
 
     /**
@@ -56,11 +59,20 @@ public class RpcSendingServiceAdapterImpl implements RpcSendingServiceAdapter {
 
     private final AddressChannelManager    addressChannelManager;
 
+    private final NettyRpcClientHandler    nettyRpcClientHandler;
+
+    private final RpcMessageEncoder        encoder;
+
+    private final RpcMessageDecoder        decoder;
+
     public RpcSendingServiceAdapterImpl(RpcServiceFindingAdapter findingAdapter, WaitingProcess waitingProcess,
-        AddressChannelManager addressChannelManager) {
+                                        AddressChannelManager addressChannelManager, NettyRpcClientHandler nettyRpcClientHandler, RpcMessageEncoder encoder, RpcMessageDecoder decoder) {
         this.findingAdapter = findingAdapter;
         this.waitingProcess = waitingProcess;
         this.addressChannelManager = addressChannelManager;
+        this.nettyRpcClientHandler = nettyRpcClientHandler;
+        this.encoder = encoder;
+        this.decoder = decoder;
         // initialize
         eventLoopGroup = new NioEventLoopGroup();
         bootstrap = new Bootstrap();
@@ -78,9 +90,9 @@ public class RpcSendingServiceAdapterImpl implements RpcSendingServiceAdapter {
                     // If no data is sent to the server within 15 seconds, a
                     // heartbeat request is sent
                     p.addLast(new IdleStateHandler(0, 5, 0, TimeUnit.SECONDS));
-                    p.addLast(new RpcMessageEncoder());
-                    p.addLast(new RpcMessageDecoder());
-                    p.addLast(new NettyRpcClientHandler());
+                    p.addLast(encoder);
+                    p.addLast(decoder);
+                    p.addLast(nettyRpcClientHandler);
                 }
             });
     }
@@ -101,9 +113,9 @@ public class RpcSendingServiceAdapterImpl implements RpcSendingServiceAdapter {
             // can choose compress method,code method
             RpcData rpcData = RpcData.builder()
                 .data(rpcRequest)
-                .codec(SerializationTypeEnum.HESSIAN.getCode())
-                .compress(CompressTypeEnum.GZIP.getCode())
-                .messageType((byte)1)
+                .serializeMethodCodec(SerializationTypeEnum.HESSIAN.getCode())
+                .compressType(CompressTypeEnum.GZIP.getCode())
+                .messageType(RpcConstants.REQUEST_TYPE)
                 .build();
 
             channel.writeAndFlush(rpcData).addListener((ChannelFutureListener)future -> {

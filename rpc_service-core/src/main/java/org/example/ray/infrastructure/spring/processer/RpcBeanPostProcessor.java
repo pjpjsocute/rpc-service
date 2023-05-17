@@ -2,6 +2,7 @@ package org.example.ray.infrastructure.spring.processer;
 
 import java.lang.reflect.Field;
 
+import org.example.ray.annotation.RpcConsumer;
 import org.example.ray.annotation.RpcProvider;
 import org.example.ray.domain.RpcServiceConfig;
 import org.example.ray.infrastructure.adapter.RpcSendingServiceAdapter;
@@ -64,8 +65,8 @@ public class RpcBeanPostProcessor implements BeanPostProcessor {
         Class<?> toBeProcessedBean = bean.getClass();
         Field[] declaredFields = toBeProcessedBean.getDeclaredFields();
         for (Field declaredField : declaredFields) {
-            if (declaredField.isAnnotationPresent(RpcProvider.class)) {
-                RpcProvider annotation = declaredField.getAnnotation(RpcProvider.class);
+            if (declaredField.isAnnotationPresent(RpcConsumer.class)) {
+                RpcConsumer annotation = declaredField.getAnnotation(RpcConsumer.class);
                 // build rpc service config
                 RpcServiceConfig serviceConfig =
                     RpcServiceConfig.builder().project(annotation.project()).version(annotation.version()).build();
