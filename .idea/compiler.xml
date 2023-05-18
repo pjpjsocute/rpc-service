@@ -7,24 +7,21 @@
         <sourceOutputDir name="target/generated-sources/annotations" />
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
+        <module name="rpc_service-support" />
         <module name="rpc_service-core" />
         <module name="rpc-test-provider" />
-        <module name="rpc_service-support" />
+        <module name="rpc-test-consumer" />
+        <module name="rpc-test-api" />
       </profile>
     </annotationProcessing>
     <bytecodeTargetLevel>
       <module name="registration" target="1.8" />
       <module name="rpc-service" target="1.8" />
-      <module name="rpc-test-api" target="1.8" />
-      <module name="rpc-test-consumer" target="1.8" />
-      <module name="rpc-test-provider" target="1.8" />
       <module name="rpc_service-api" target="1.8" />
-      <module name="rpc_service-core" target="1.8" />
       <module name="rpc_service-example-consumer" target="1.8" />
       <module name="rpc_service-example-provider" target="1.8" />
       <module name="rpc_service-ExampleComsumer" target="1.8" />
       <module name="rpc_service-registration" target="1.8" />
-      <module name="rpc_service-support" target="1.8" />
     </bytecodeTargetLevel>
   </component>
   <component name="JavacSettings">
@@ -41,6 +38,7 @@
       <module name="rpc_service-example-provider" options="" />
       <module name="rpc_service-registration" options="" />
       <module name="rpc_service-support" options="-parameters" />
+      <module name="rpc_service2-springboot-starter" options="-parameters" />
     </option>
   </component>
 </project>

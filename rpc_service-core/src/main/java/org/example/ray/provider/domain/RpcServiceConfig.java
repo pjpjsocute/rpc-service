@@ -36,7 +36,7 @@ public class RpcServiceConfig {
     private String group = "";
 
     public String getRpcServiceName() {
-        return this.getProject() +"*"+this.getGroup()+"*"+ this.getClassName() +"*"+ this.getVersion();
+        return this.getProject() +"*"+this.getGroup()+"*"+ this.getServiceName() +"*"+ this.getVersion();
     }
 
     /**
@@ -52,6 +52,6 @@ public class RpcServiceConfig {
      * @return
      */
     public String getClassName(){
-        return this.service.getClass().getCanonicalName();
+        return this.service.toString();
     }
 }

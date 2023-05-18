@@ -2,6 +2,7 @@ package org.example.ray.infrastructure.netty;
 
 import javax.annotation.Resource;
 
+import io.netty.channel.ChannelHandler;
 import org.example.ray.constants.RpcConstants;
 import org.example.ray.provider.domain.RpcData;
 import org.example.ray.provider.domain.enums.RpcErrorMessageEnum;
@@ -31,7 +32,7 @@ import io.netty.handler.codec.MessageToByteEncoder;
  *               requestId（请求的Id）
  */
 @Component
-
+@org.jboss.netty.channel.ChannelHandler.Sharable
 public class RpcMessageEncoder extends MessageToByteEncoder<RpcData> {
 
     @Resource
@@ -81,7 +82,7 @@ public class RpcMessageEncoder extends MessageToByteEncoder<RpcData> {
             byteBuf.writeInt(fullLength);
             byteBuf.writerIndex(writeIndex);
         } catch (Exception e) {
-            LogUtil.error("Encode request error!", e);
+            LogUtil.error("Encode request error:{},data:{}", e,rpcData);
             throw new RpcException(RpcErrorMessageEnum.REQUEST_ENCODE_FAIL.getCode(),
                 RpcErrorMessageEnum.REQUEST_ENCODE_FAIL.getMessage());
         }

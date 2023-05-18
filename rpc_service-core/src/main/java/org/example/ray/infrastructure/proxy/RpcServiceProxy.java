@@ -41,10 +41,11 @@ public class RpcServiceProxy implements InvocationHandler {
             .traceId(UUID.randomUUID().toString())
             .project(config.getProject())
             .version(config.getVersion())
+            .group(config.getGroup())
             .build();
 
         RpcResponse<Object> rpcResponse = null;
-        Object o = sendingServiceAdapter.sendRpcRequest(rpcRequest);
+        // Object o = sendingServiceAdapter.sendRpcRequest(rpcRequest);
 
         CompletableFuture<RpcResponse<Object>> completableFuture =
             (CompletableFuture<RpcResponse<Object>>)sendingServiceAdapter.sendRpcRequest(rpcRequest);

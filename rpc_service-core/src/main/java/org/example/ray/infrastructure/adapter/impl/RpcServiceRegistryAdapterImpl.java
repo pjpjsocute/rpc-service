@@ -10,10 +10,14 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 import org.apache.curator.framework.CuratorFramework;
+import org.example.ray.expection.RpcException;
+import org.example.ray.infrastructure.config.PropertiesReader;
 import org.example.ray.provider.domain.RpcServiceConfig;
 import org.example.ray.infrastructure.adapter.RpcServiceRegistryAdapter;
 import org.example.ray.infrastructure.util.LogUtil;
 import org.example.ray.infrastructure.zk.util.CuratorUtils;
+import org.example.ray.provider.domain.enums.RpcErrorMessageEnum;
+import org.example.ray.util.PropertiesFileUtil;
 import org.springframework.stereotype.Component;
 
 /**
@@ -22,7 +26,6 @@ import org.springframework.stereotype.Component;
  * @description: Registration service for registration into zk todo: wait for
  *               the implementation of the registration center
  */
-@Component
 
 public class RpcServiceRegistryAdapterImpl implements RpcServiceRegistryAdapter {
 
@@ -36,8 +39,9 @@ public class RpcServiceRegistryAdapterImpl implements RpcServiceRegistryAdapter 
             // add service to map cache
             registerServiceToMap(rpcServiceConfig);
             // add service to zk
+            LogUtil.info("add service to zk,service name{},host:{}", rpcServiceConfig.getRpcServiceName(),hostAddress);
             registerServiceToZk(rpcServiceConfig.getRpcServiceName(),
-                new InetSocketAddress(hostAddress, NETTY_SERVER_PORT));
+                new InetSocketAddress(hostAddress, PropertiesReader.getNettyServerPort()));
         } catch (UnknownHostException e) {
             LogUtil.error("occur exception when getHostAddress", e);
             throw new RuntimeException(e);
@@ -46,14 +50,14 @@ public class RpcServiceRegistryAdapterImpl implements RpcServiceRegistryAdapter 
     }
 
     @Override
-    public Object getService(String rpcClassName) {
-        return null;
+    public Object getService(String rpcServiceName) {
+        Object service = serviceMap.get(rpcServiceName);
+        if (null == service) {
+            throw new RpcException(RpcErrorMessageEnum.SERVICE_CAN_NOT_BE_FOUND.getCode(),"service not found");
+        }
+        return service;
     }
 
-    @Override
-    public List<Object> getServices(String rpcServiceName) {
-        return null;
-    }
 
     private void registerServiceToZk(String rpcServiceName, InetSocketAddress inetSocketAddress) {
         String servicePath = CuratorUtils.ZK_REGISTER_ROOT_PATH + "/" + rpcServiceName + inetSocketAddress.toString();

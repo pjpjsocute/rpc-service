@@ -10,6 +10,9 @@ server:
     max-threads: 1000
     min-spare-threads: 30
   port: 20001
+netty:
+  server:
+    port: 9999
 logging:
   level:
     root: INFO

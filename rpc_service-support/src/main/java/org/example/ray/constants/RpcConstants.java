@@ -1,7 +1,12 @@
 package org.example.ray.constants;
 
+import static org.example.ray.enums.RpcConfigEnum.NETTY_PORT;
+import static org.example.ray.enums.RpcConfigEnum.RPC_CONFIG_PATH;
+
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
+
+import org.example.ray.util.PropertiesFileUtil;
 
 /**
  * @author wangtao .
@@ -33,5 +38,5 @@ public class RpcConstants {
 
     public static final String LOAD_BALANCE = "hash";
 
-    public static final Integer NETTY_SERVER_PORT = 9998;
+    public static final Integer NETTY_SERVER_PORT = null;
 }

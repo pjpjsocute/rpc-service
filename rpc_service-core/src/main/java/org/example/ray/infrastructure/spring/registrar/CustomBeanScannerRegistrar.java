@@ -37,13 +37,15 @@ public class CustomBeanScannerRegistrar implements ImportBeanDefinitionRegistrar
             scanBasePackages = new String[]{((org.springframework.core.type.StandardAnnotationMetadata) importingClassMetadata).getIntrospectedClass().getPackage().getName()};
         }
         LogUtil.info("scanning packages: [{}]", (Object) scanBasePackages);
-        //scan the package and register the bean
-        RpcBeanScanner rpcConsumerBeanScanner = new RpcBeanScanner(registry, RpcConsumer.class);
+//        //scan the package and register the bean
+//        RpcBeanScanner rpcConsumerBeanScanner = new RpcBeanScanner(registry, RpcConsumer.class);
         RpcBeanScanner rpcProviderBeanScanner = new RpcBeanScanner(registry, RpcProvider.class);
         if (resourceLoader != null) {
-            rpcConsumerBeanScanner.setResourceLoader(resourceLoader);
+//            rpcConsumerBeanScanner.setResourceLoader(resourceLoader);
             rpcProviderBeanScanner.setResourceLoader(resourceLoader);
         }
+        int rpcServiceCount = rpcProviderBeanScanner.scan(scanBasePackages);
+        LogUtil.info("rpcServiceScanner扫描的数量 [{}]", rpcServiceCount);
         LogUtil.info("scanning RpcConsumer annotated beans end");
     }
 

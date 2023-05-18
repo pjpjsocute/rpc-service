@@ -2,6 +2,10 @@ package org.example.ray.infrastructure.netty;
 
 import javax.annotation.Resource;
 
+import io.netty.channel.*;
+import io.netty.handler.timeout.IdleState;
+import org.example.ray.constants.RpcConstants;
+import org.example.ray.infrastructure.factory.SingletonFactory;
 import org.example.ray.provider.domain.RpcData;
 import org.example.ray.provider.domain.RpcRequest;
 import org.example.ray.provider.domain.RpcResponse;
@@ -11,9 +15,9 @@ import org.example.ray.infrastructure.netty.client.WaitingProcess;
 import org.example.ray.infrastructure.util.LogUtil;
 import org.springframework.stereotype.Component;
 
-import io.netty.channel.ChannelHandlerContext;
-import io.netty.channel.SimpleChannelInboundHandler;
 import io.netty.handler.timeout.IdleStateEvent;
+
+import java.net.InetSocketAddress;
 
 /**
  * @author zhoulei
@@ -21,13 +25,8 @@ import io.netty.handler.timeout.IdleStateEvent;
  * @description:
  */
 
-@Component
 public class NettyRpcClientHandler extends SimpleChannelInboundHandler<RpcData> {
-    /**
-     * Read the message transmitted by the server
-     */
-    @Resource
-    private WaitingProcess waitingProcess;
+
 
     /**
      * heart beat handle
@@ -47,6 +46,25 @@ public class NettyRpcClientHandler extends SimpleChannelInboundHandler<RpcData> 
         }
     }
 
+//    public void userEventTriggered(ChannelHandlerContext ctx, Object evt) throws Exception {
+//        // if the channel is free，close it
+//        if (evt instanceof IdleStateEvent) {
+//            IdleState state = ((IdleStateEvent) evt).state();
+//            if (state == IdleState.WRITER_IDLE) {
+//                LogUtil.info("write idle happen [{}]", ctx.channel().remoteAddress());
+//                Channel channel = adapter.getChannel((InetSocketAddress) ctx.channel().remoteAddress());
+//                RpcData rpcData = new RpcData();
+//                rpcData.setSerializeMethodCodec(SerializationTypeEnum.HESSIAN.getCode());
+//                rpcData.setCompressType(CompressTypeEnum.GZIP.getCode());
+//                rpcData.setMessageType(RpcConstants.HEARTBEAT_REQUEST_TYPE);
+//                rpcData.setData(RpcConstants.PING);
+//                channel.writeAndFlush(rpcData).addListener(ChannelFutureListener.CLOSE_ON_FAILURE);
+//            }
+//        } else {
+//            super.userEventTriggered(ctx, evt);
+//        }
+//    }
+
     /**
      * Called when an exception occurs in processing a client message
      */
@@ -59,7 +77,7 @@ public class NettyRpcClientHandler extends SimpleChannelInboundHandler<RpcData> 
 
     @Override
     protected void channelRead0(ChannelHandlerContext ctx, RpcData rpcData) throws Exception {
-        LogUtil.info("Server receive message: [{}]", rpcData);
+        LogUtil.info("Client receive message: [{}]", rpcData);
         byte messageType = rpcData.getMessageType();
         RpcData rpcMessage = new RpcData();
         setupRpcMessage(rpcMessage);
@@ -68,7 +86,7 @@ public class NettyRpcClientHandler extends SimpleChannelInboundHandler<RpcData> 
             LogUtil.info("heart [{}]", rpcMessage.getData());
         } else if (rpcData.isResponse()){
             RpcResponse<Object> rpcResponse = (RpcResponse<Object>) rpcData.getData();
-            waitingProcess.complete(rpcResponse);
+            SingletonFactory.getInstance(WaitingProcess.class).complete(rpcResponse);
         }
     }
 
@@ -76,6 +94,8 @@ public class NettyRpcClientHandler extends SimpleChannelInboundHandler<RpcData> 
         rpcMessage.setSerializeMethodCodec(SerializationTypeEnum.HESSIAN.getCode());
         rpcMessage.setCompressType(CompressTypeEnum.GZIP.getCode());
     }
+
+
 
 
 

@@ -1,8 +1,10 @@
 package org.example.ray.infrastructure.netty.client;
 
 import io.netty.channel.Channel;
+import io.netty.channel.ChannelHandler;
 import lombok.extern.slf4j.Slf4j;
 import org.example.ray.infrastructure.util.LogUtil;
+import org.springframework.stereotype.Component;
 
 import java.net.InetSocketAddress;
 import java.util.Map;
@@ -13,6 +15,7 @@ import java.util.concurrent.ConcurrentHashMap;
  * @create 2023/5/16
  * @description:
  */
+
 
 public class AddressChannelManager {
 

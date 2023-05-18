@@ -1,6 +1,7 @@
 package org.example.ray.infrastructure.serialize;
 
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -18,12 +19,11 @@ import lombok.extern.slf4j.Slf4j;
  * @description:
  */
 @Component
-
 public class SerializationStrategy implements ApplicationContextAware {
 
     private ApplicationContext              applicationContext;
 
-    private Map<Byte, SerializationService> serviceMap;
+    private static Map<Byte, SerializationService> serviceMap = new ConcurrentHashMap<>();
 
     @Override
     public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
@@ -33,9 +33,9 @@ public class SerializationStrategy implements ApplicationContextAware {
 
     private void initStrategy() {
         Map<String, SerializationService> beanMap = applicationContext.getBeansOfType(SerializationService.class);
-        this.serviceMap = beanMap.values()
-            .stream()
-            .collect(Collectors.toMap(SerializationService::getSerializationMethod, Function.identity()));
+        for (SerializationService value : beanMap.values()) {
+            serviceMap.put(value.getSerializationMethod(), value);
+        }
     }
 
     /**

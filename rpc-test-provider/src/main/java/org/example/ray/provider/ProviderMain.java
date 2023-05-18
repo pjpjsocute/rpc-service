@@ -12,9 +12,9 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
  */
 @SpringBootApplication(scanBasePackages = "org.example.ray.provider.application")
 @SimpleRpcApplication(basePackage = "org.example.ray.provider.application")
-public class Main {
+public class ProviderMain {
     public static void main(String[] args) {
-        SpringApplication.run(Main.class, args);
+        SpringApplication.run(ProviderMain.class, args);
         // AnnotationConfigApplicationContext applicationContext = new
         // AnnotationConfigApplicationContext(Main.class);
         // TestInterface helloController = (TestInterface)

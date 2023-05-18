@@ -5,6 +5,7 @@ import com.caucho.hessian.io.HessianOutput;
 import org.example.ray.provider.domain.enums.SerializationTypeEnum;
 import org.example.ray.expection.RpcException;
 import org.example.ray.infrastructure.serialize.SerializationService;
+import org.springframework.stereotype.Component;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -16,6 +17,7 @@ import static org.example.ray.provider.domain.enums.RpcErrorMessageEnum.SERIALIZ
  * @create 2023/5/17
  * @description:
  */
+@Component
 public class HessianSerializedService implements SerializationService {
     @Override
     public Byte getSerializationMethod() {

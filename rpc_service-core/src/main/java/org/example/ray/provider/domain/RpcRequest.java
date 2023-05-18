@@ -49,8 +49,10 @@ public class RpcRequest implements Serializable {
      */
     private String project;
 
+    private String group;
+
     public String fetchRpcServiceName() {
-        return this.project+ this.getServiceName() +  this.getVersion();
+        return this.getProject() +"*"+this.getGroup()+"*"+ this.getServiceName() +"*"+ this.getVersion();
     }
 
 

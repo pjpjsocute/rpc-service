@@ -30,7 +30,6 @@ import org.springframework.stereotype.Component;
  *               hash ring, thus achieving load balancing.
  */
 @Component
-
 public class ConsistentHashLoadBalanceService implements LoadBalanceService {
 
     private final Map<String, ConsistentHashLoadBalanceSelector> serviceToSelectorMap = new ConcurrentHashMap<>();
@@ -45,6 +44,7 @@ public class ConsistentHashLoadBalanceService implements LoadBalanceService {
             // one address may map to multiple virtual nodes
             // use the md5 hash algorithm to generate the hash value of the
             // virtual node
+            LogUtil.info("init add serviceUrlList:{}", serviceUrlList);
             for (String serviceNode : serviceUrlList) {
                 addVirtualNode(serviceNode, virtualNodeNumber);
             }
@@ -59,7 +59,7 @@ public class ConsistentHashLoadBalanceService implements LoadBalanceService {
                 // use 8 byte for each virtual node
                 for (int j = 0; j < 4; j++) {
                     Long hash = calculateHash(md5Hash, j);
-                    virtualInvokers.put(hash, virtualNodeName);
+                    virtualInvokers.put(hash, serviceNode);
                 }
             }
         }

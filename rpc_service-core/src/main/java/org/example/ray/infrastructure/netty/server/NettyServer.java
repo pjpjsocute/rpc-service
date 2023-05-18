@@ -3,8 +3,9 @@ package org.example.ray.infrastructure.netty.server;
 import java.net.InetAddress;
 import java.util.concurrent.TimeUnit;
 
+import org.example.ray.infrastructure.config.PropertiesReader;
 import org.example.ray.infrastructure.config.ServerShutdownHook;
-import org.example.ray.infrastructure.netty.NettyRpcClientHandler;
+import org.example.ray.infrastructure.netty.NettyRpcServerHandler;
 import org.example.ray.infrastructure.netty.RpcMessageDecoder;
 import org.example.ray.infrastructure.netty.RpcMessageEncoder;
 import org.example.ray.infrastructure.util.LogUtil;
@@ -24,7 +25,6 @@ import io.netty.handler.logging.LogLevel;
 import io.netty.handler.logging.LoggingHandler;
 import io.netty.handler.timeout.IdleStateHandler;
 import io.netty.util.concurrent.DefaultEventExecutorGroup;
-import lombok.extern.slf4j.Slf4j;
 
 import javax.annotation.Resource;
 
@@ -34,12 +34,9 @@ import javax.annotation.Resource;
  * @description: netty server listening the client side and run the rpc service
  */
 @Component
-
 public class NettyServer {
-
-    public static final int                 PORT = 9999;
     @Resource
-    private NettyRpcClientHandler nettyRpcClientHandler;
+    private NettyRpcServerHandler nettyRpcServerHandler;
 
     public void start() {
         // first clear the registry
@@ -73,13 +70,13 @@ public class NettyServer {
                                     pipeline.addLast(new IdleStateHandler(30, 0, 0, TimeUnit.SECONDS));
                                     pipeline.addLast(new RpcMessageEncoder());
                                     pipeline.addLast(new RpcMessageDecoder());
-                                    pipeline.addLast(businessGroup, nettyRpcClientHandler);
+                                    pipeline.addLast(businessGroup, nettyRpcServerHandler);
                                 }
                             });
 
             String host = InetAddress.getLocalHost().getHostAddress();
             // bind port
-            ChannelFuture f = serverBootstrap.bind(host, PORT).sync();
+            ChannelFuture f = serverBootstrap.bind(host, PropertiesReader.getNettyServerPort()).sync();
             // close
             f.channel().closeFuture().sync();
         }catch (Exception e){

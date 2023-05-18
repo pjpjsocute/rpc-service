@@ -13,8 +13,8 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
  */
 @SpringBootApplication(scanBasePackages = "org.example.ray.consumer")
 @SimpleRpcApplication(basePackage = "org.example.ray.consumer")
-public class Main {
+public class ConsumerMain {
     public static void main(String[] args) {
-        SpringApplication.run(Main.class, args);
+        SpringApplication.run(ConsumerMain.class, args);
     }
 }

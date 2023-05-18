@@ -7,7 +7,7 @@ import org.example.ray.annotation.RpcProvider;
  * @create 2023/5/18
  * @description:
  */
-@RpcProvider
+@RpcProvider(serviceName = "Test",group = "test", version = "1.0")
 public class TestImpl implements Test{
     @Override
     public void test() {

@@ -1,10 +1,6 @@
 package org.example.ray.annotation;
 
-import java.lang.annotation.Documented;
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
+import java.lang.annotation.*;
 
 /**
  * @author zhoulei
@@ -12,9 +8,10 @@ import java.lang.annotation.Target;
  * @description: Rpc consumer, the caller uses
  */
 
-@Target({ElementType.FIELD})
-@Retention(RetentionPolicy.RUNTIME)
 @Documented
+@Retention(RetentionPolicy.RUNTIME)
+@Target({ElementType.FIELD,ElementType.TYPE})
+@Inherited
 public @interface RpcConsumer {
     /**
      * Service project, default value is empty string

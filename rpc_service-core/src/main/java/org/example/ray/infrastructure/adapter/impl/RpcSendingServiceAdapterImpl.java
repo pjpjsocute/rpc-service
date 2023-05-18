@@ -5,6 +5,7 @@ import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.TimeUnit;
 
 import org.example.ray.constants.RpcConstants;
+import org.example.ray.infrastructure.factory.SingletonFactory;
 import org.example.ray.provider.domain.RpcData;
 import org.example.ray.provider.domain.RpcRequest;
 import org.example.ray.provider.domain.RpcResponse;
@@ -55,24 +56,18 @@ public class RpcSendingServiceAdapterImpl implements RpcSendingServiceAdapter {
 
     private final RpcServiceFindingAdapter findingAdapter;
 
-    private final WaitingProcess           waitingProcess;
-
     private final AddressChannelManager    addressChannelManager;
 
-    private final NettyRpcClientHandler    nettyRpcClientHandler;
 
     private final RpcMessageEncoder        encoder;
 
     private final RpcMessageDecoder        decoder;
 
-    public RpcSendingServiceAdapterImpl(RpcServiceFindingAdapter findingAdapter, WaitingProcess waitingProcess,
-                                        AddressChannelManager addressChannelManager, NettyRpcClientHandler nettyRpcClientHandler, RpcMessageEncoder encoder, RpcMessageDecoder decoder) {
+    public RpcSendingServiceAdapterImpl(RpcServiceFindingAdapter findingAdapter, RpcMessageEncoder rpcEncoder, RpcMessageDecoder rpcDecoder) {
         this.findingAdapter = findingAdapter;
-        this.waitingProcess = waitingProcess;
-        this.addressChannelManager = addressChannelManager;
-        this.nettyRpcClientHandler = nettyRpcClientHandler;
-        this.encoder = encoder;
-        this.decoder = decoder;
+        this.addressChannelManager = SingletonFactory.getInstance(AddressChannelManager.class);
+        this.encoder = rpcEncoder;
+        this.decoder = rpcDecoder;
         // initialize
         eventLoopGroup = new NioEventLoopGroup();
         bootstrap = new Bootstrap();
@@ -92,7 +87,7 @@ public class RpcSendingServiceAdapterImpl implements RpcSendingServiceAdapter {
                     p.addLast(new IdleStateHandler(0, 5, 0, TimeUnit.SECONDS));
                     p.addLast(encoder);
                     p.addLast(decoder);
-                    p.addLast(nettyRpcClientHandler);
+                    p.addLast(new NettyRpcClientHandler());
                 }
             });
     }
@@ -108,7 +103,7 @@ public class RpcSendingServiceAdapterImpl implements RpcSendingServiceAdapter {
         Channel channel = fetchAndConnectChannel(address);
         if (channel.isActive()) {
             // add to a waitList
-            waitingProcess.put(rpcRequest.getTraceId(), result);
+            SingletonFactory.getInstance(WaitingProcess.class).put(rpcRequest.getTraceId(), result);
 
             // can choose compress method,code method
             RpcData rpcData = RpcData.builder()
@@ -159,6 +154,15 @@ public class RpcSendingServiceAdapterImpl implements RpcSendingServiceAdapter {
             channel = completableFuture.get();
         } catch (Exception e) {
             LogUtil.error("occur exception when connect to server:", e);
+        }
+        return channel;
+    }
+
+    public Channel getChannel(InetSocketAddress inetSocketAddress) {
+        Channel channel = addressChannelManager.get(inetSocketAddress);
+        if (channel == null) {
+            channel =  connect(inetSocketAddress);
+            addressChannelManager.set(inetSocketAddress, channel);
         }
         return channel;
     }

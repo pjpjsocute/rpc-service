@@ -2,6 +2,7 @@ package org.example.ray.infrastructure.netty;
 
 import javax.annotation.Resource;
 
+import io.netty.channel.ChannelHandler;
 import org.example.ray.constants.RpcConstants;
 import org.example.ray.provider.domain.RpcData;
 import org.example.ray.provider.domain.RpcRequest;
@@ -60,7 +61,6 @@ public class NettyRpcServerHandler extends SimpleChannelInboundHandler<RpcData> 
     @Override
     protected void channelRead0(ChannelHandlerContext ctx, RpcData rpcData) throws Exception {
         LogUtil.info("Server receive message: [{}]", rpcData);
-        byte messageType = rpcData.getMessageType();
         RpcData rpcMessage = new RpcData();
         setupRpcMessage(rpcMessage);
 

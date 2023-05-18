@@ -1,9 +1,13 @@
 package org.example.ray.infrastructure.compress;
 
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentMap;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
+import org.example.ray.infrastructure.config.PropertiesReader;
+import org.example.ray.infrastructure.factory.SingletonFactory;
 import org.example.ray.infrastructure.util.LogUtil;
 import org.springframework.beans.BeansException;
 import org.springframework.context.ApplicationContext;
@@ -12,18 +16,19 @@ import org.springframework.stereotype.Component;
 
 import lombok.extern.slf4j.Slf4j;
 
+import javax.annotation.PostConstruct;
+
 /**
  * @author zhoulei
  * @create 2023/5/17
  * @description:
  */
 @Component
-
 public class CompressStrategy implements ApplicationContextAware {
 
     private ApplicationContext         applicationContext;
 
-    private Map<Byte, CompressService> serviceMap;
+    private static Map<Byte, CompressService> serviceMap = new ConcurrentHashMap<>();
 
     @Override
     public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
@@ -33,9 +38,10 @@ public class CompressStrategy implements ApplicationContextAware {
 
     private void initStrategy() {
         Map<String, CompressService> beanMap = applicationContext.getBeansOfType(CompressService.class);
-        this.serviceMap = beanMap.values()
-            .stream()
-            .collect(Collectors.toMap(CompressService::getCompressMethod, Function.identity()));
+
+        for (CompressService compressService : beanMap.values()) {
+            serviceMap.put(compressService.getCompressMethod(), compressService);
+        }
     }
 
     /**
@@ -58,12 +64,13 @@ public class CompressStrategy implements ApplicationContextAware {
         return findService(serializationMethod).decompress(bytes);
     }
 
-    private CompressService findService(Byte serializationMethod) {
-        CompressService compressService = serviceMap.get(serializationMethod);
+    public  CompressService findService(Byte serializationMethod) {
+        CompressService  compressService= serviceMap.get(serializationMethod);
         if (compressService == null) {
             LogUtil.error("CompressService is null,{}", serializationMethod);
             throw new RuntimeException("compressService is null");
         }
-        return compressService;
+        return serviceMap.get(serializationMethod);
     }
+
 }

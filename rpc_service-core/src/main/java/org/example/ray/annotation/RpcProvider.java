@@ -2,11 +2,7 @@ package org.example.ray.annotation;
 
 import org.springframework.stereotype.Component;
 
-import java.lang.annotation.Documented;
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
+import java.lang.annotation.*;
 
 /**
  * @author zhoulei
@@ -14,10 +10,10 @@ import java.lang.annotation.Target;
  * @description: RPC provider that enables automatic injection into spring, registration
  */
 
-@Target({ElementType.TYPE})
-@Retention(RetentionPolicy.RUNTIME)
 @Documented
-@Component
+@Retention(RetentionPolicy.RUNTIME)
+@Target({ElementType.TYPE})
+@Inherited
 public @interface RpcProvider {
 
     /**
@@ -35,4 +31,6 @@ public @interface RpcProvider {
      * Service group, default value is empty string
      */
     String group() default "default";
+
+    String serviceName() ;
 }

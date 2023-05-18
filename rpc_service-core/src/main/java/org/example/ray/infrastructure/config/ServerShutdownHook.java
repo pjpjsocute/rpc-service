@@ -4,7 +4,8 @@ import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 import org.example.ray.infrastructure.netty.server.NettyServer;
 import org.example.ray.infrastructure.util.ThreadPoolFactoryUtil;
-import org.example.ray.infrastructure.util.ZkUtils;
+import org.example.ray.infrastructure.zk.util.CuratorUtils;
+
 
 import java.net.InetAddress;
 import java.net.InetSocketAddress;
@@ -33,8 +34,8 @@ public class ServerShutdownHook {
     private void clearAll() {
         try {
             // 清理注册表
-            InetSocketAddress inetSocketAddress = new InetSocketAddress(InetAddress.getLocalHost().getHostAddress(), NettyServer.PORT);
-            ZkUtils.clearRegistry(ZkUtils.getZkClient(), inetSocketAddress);
+            InetSocketAddress inetSocketAddress = new InetSocketAddress(InetAddress.getLocalHost().getHostAddress(),PropertiesReader.getNettyServerPort());
+            CuratorUtils.clearRegistry(CuratorUtils.getZkClient(), inetSocketAddress);
         } catch (Exception ignored) {
 
         }

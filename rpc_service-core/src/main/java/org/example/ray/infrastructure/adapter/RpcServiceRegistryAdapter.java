@@ -23,12 +23,6 @@ public interface RpcServiceRegistryAdapter {
      */
     Object getService(String rpcClassName);
 
-    /**
-     * get all services by name
-     * @param rpcServiceName
-     * @return
-     */
-    List<Object> getServices(String rpcServiceName);
 
 
 }

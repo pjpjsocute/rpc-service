@@ -1,15 +1,13 @@
 package org.example.ray.infrastructure.netty;
 
-import javax.annotation.Resource;
-
 import org.example.ray.constants.RpcConstants;
+import org.example.ray.infrastructure.compress.CompressStrategy;
+import org.example.ray.infrastructure.factory.SingletonFactory;
+import org.example.ray.infrastructure.serialize.SerializationStrategy;
+import org.example.ray.infrastructure.util.LogUtil;
 import org.example.ray.provider.domain.RpcData;
 import org.example.ray.provider.domain.RpcRequest;
 import org.example.ray.provider.domain.RpcResponse;
-import org.example.ray.infrastructure.compress.CompressStrategy;
-import org.example.ray.infrastructure.serialize.SerializationStrategy;
-import org.example.ray.infrastructure.util.LogUtil;
-import org.springframework.stereotype.Component;
 
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;
@@ -28,15 +26,9 @@ import io.netty.handler.codec.LengthFieldBasedFrameDecoder;
  *               | | | body | | | | ... ... |
  *               +-------------------------------------------------------------------------------------------------------+
  */
-@Component
 
 public class RpcMessageDecoder extends LengthFieldBasedFrameDecoder {
 
-    @Resource
-    private SerializationStrategy serializationStrategy;
-
-    @Resource
-    private CompressStrategy      compressStrategy;
 
     public RpcMessageDecoder() {
         // lengthFieldOffset: magic code is 4B, and version is 1B, and then full
@@ -81,6 +73,7 @@ public class RpcMessageDecoder extends LengthFieldBasedFrameDecoder {
      * @return
      */
     private Object decode(ByteBuf byteBuf) {
+        LogUtil.info("start decode");
         // check magic code
         checkMagicCode(byteBuf);
         checkVersion(byteBuf);
@@ -99,7 +92,7 @@ public class RpcMessageDecoder extends LengthFieldBasedFrameDecoder {
             .messageType(messageType)
             .build();
 
-        if (rpcMessage.canSendRequest()) {
+        if (rpcMessage.isHeatBeatRequest()) {
             rpcMessage.setData(RpcConstants.PING);
             return rpcMessage;
         }
@@ -117,18 +110,19 @@ public class RpcMessageDecoder extends LengthFieldBasedFrameDecoder {
     }
 
     private RpcData decodeBody(RpcData rpcMessage, ByteBuf byteBuf, Integer bodyLength) {
+        LogUtil.info("start decode body");
         byte[] bodyBytes = new byte[bodyLength];
         byteBuf.readBytes(bodyBytes);
         // decompose
-        bodyBytes = compressStrategy.decompress(bodyBytes, rpcMessage.getCompressType());
+        bodyBytes = SingletonFactory.getInstance(CompressStrategy.class).decompress(bodyBytes, rpcMessage.getCompressType());
         // deserialize
         if (rpcMessage.getMessageType() == RpcConstants.REQUEST_TYPE) {
             RpcRequest rpcRequest =
-                serializationStrategy.deserialize(bodyBytes, RpcRequest.class, rpcMessage.getSerializeMethodCodec());
+                SingletonFactory.getInstance(SerializationStrategy.class).deserialize(bodyBytes, RpcRequest.class, rpcMessage.getSerializeMethodCodec());
             rpcMessage.setData(rpcRequest);
         } else {
             RpcResponse rpcResponse =
-                serializationStrategy.deserialize(bodyBytes, RpcResponse.class, rpcMessage.getSerializeMethodCodec());
+                    SingletonFactory.getInstance(SerializationStrategy.class).deserialize(bodyBytes, RpcResponse.class, rpcMessage.getSerializeMethodCodec());
             rpcMessage.setData(rpcResponse);
         }
         return rpcMessage;

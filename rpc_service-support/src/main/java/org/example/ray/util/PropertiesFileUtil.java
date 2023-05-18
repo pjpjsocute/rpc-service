@@ -1,4 +1,4 @@
-package org.example.ray.infrastructure.util;
+package org.example.ray.util;
 
 import java.io.FileInputStream;
 import java.io.IOException;

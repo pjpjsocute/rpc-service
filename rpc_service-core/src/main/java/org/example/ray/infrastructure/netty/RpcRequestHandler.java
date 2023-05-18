@@ -3,6 +3,7 @@ package org.example.ray.infrastructure.netty;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
+import io.netty.channel.ChannelHandler;
 import org.example.ray.provider.domain.RpcRequest;
 import org.example.ray.provider.domain.enums.RpcErrorMessageEnum;
 import org.example.ray.expection.RpcException;
@@ -18,6 +19,7 @@ import org.springframework.stereotype.Component;
  */
 
 @Component
+
 public class RpcRequestHandler {
 
     private final RpcServiceRegistryAdapter adapter;
