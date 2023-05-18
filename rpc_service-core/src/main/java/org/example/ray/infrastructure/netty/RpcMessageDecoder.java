@@ -3,9 +3,9 @@ package org.example.ray.infrastructure.netty;
 import javax.annotation.Resource;
 
 import org.example.ray.constants.RpcConstants;
-import org.example.ray.domain.RpcData;
-import org.example.ray.domain.RpcRequest;
-import org.example.ray.domain.RpcResponse;
+import org.example.ray.provider.domain.RpcData;
+import org.example.ray.provider.domain.RpcRequest;
+import org.example.ray.provider.domain.RpcResponse;
 import org.example.ray.infrastructure.compress.CompressStrategy;
 import org.example.ray.infrastructure.serialize.SerializationStrategy;
 import org.example.ray.infrastructure.util.LogUtil;

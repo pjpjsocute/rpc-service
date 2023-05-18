@@ -1,6 +1,6 @@
 package org.example.ray.infrastructure.adapter;
 
-import org.example.ray.domain.RpcRequest;
+import org.example.ray.provider.domain.RpcRequest;
 
 import java.net.InetSocketAddress;
 

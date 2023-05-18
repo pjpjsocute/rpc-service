@@ -1,6 +1,8 @@
-package org.example.ray;
+package org.example.ray.consumer;
 
+import org.example.ray.annotation.SimpleRpcApplication;
 import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 /**
@@ -9,7 +11,8 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
  * @author zhoulei
  * @description:
  */
-@SpringBootApplication(scanBasePackages = "org.example.ray")
+@SpringBootApplication(scanBasePackages = "org.example.ray.consumer")
+@SimpleRpcApplication(basePackage = "org.example.ray.consumer")
 public class Main {
     public static void main(String[] args) {
         SpringApplication.run(Main.class, args);

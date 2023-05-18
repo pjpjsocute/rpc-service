@@ -4,7 +4,7 @@ import java.lang.reflect.Field;
 
 import org.example.ray.annotation.RpcConsumer;
 import org.example.ray.annotation.RpcProvider;
-import org.example.ray.domain.RpcServiceConfig;
+import org.example.ray.provider.domain.RpcServiceConfig;
 import org.example.ray.infrastructure.adapter.RpcSendingServiceAdapter;
 import org.example.ray.infrastructure.adapter.RpcServiceRegistryAdapter;
 import org.example.ray.infrastructure.proxy.RpcServiceProxy;

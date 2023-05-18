@@ -1,4 +1,4 @@
-package org.example.ray.domain;
+package org.example.ray.provider.domain;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

@@ -5,11 +5,11 @@ import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.TimeUnit;
 
 import org.example.ray.constants.RpcConstants;
-import org.example.ray.domain.RpcData;
-import org.example.ray.domain.RpcRequest;
-import org.example.ray.domain.RpcResponse;
-import org.example.ray.domain.enums.CompressTypeEnum;
-import org.example.ray.domain.enums.SerializationTypeEnum;
+import org.example.ray.provider.domain.RpcData;
+import org.example.ray.provider.domain.RpcRequest;
+import org.example.ray.provider.domain.RpcResponse;
+import org.example.ray.provider.domain.enums.CompressTypeEnum;
+import org.example.ray.provider.domain.enums.SerializationTypeEnum;
 import org.example.ray.infrastructure.adapter.RpcSendingServiceAdapter;
 import org.example.ray.infrastructure.adapter.RpcServiceFindingAdapter;
 import org.example.ray.infrastructure.netty.NettyRpcClientHandler;
@@ -33,7 +33,6 @@ import io.netty.channel.socket.nio.NioSocketChannel;
 import io.netty.handler.logging.LogLevel;
 import io.netty.handler.logging.LoggingHandler;
 import io.netty.handler.timeout.IdleStateHandler;
-import lombok.extern.slf4j.Slf4j;
 
 /**
  * @author zhoulei

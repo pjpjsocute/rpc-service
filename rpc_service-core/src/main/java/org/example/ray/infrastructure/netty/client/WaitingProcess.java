@@ -1,6 +1,6 @@
 package org.example.ray.infrastructure.netty.client;
 
-import org.example.ray.domain.RpcResponse;
+import org.example.ray.provider.domain.RpcResponse;
 
 import java.util.Map;
 import java.util.concurrent.CompletableFuture;

@@ -6,12 +6,11 @@ import java.lang.reflect.Proxy;
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 
-import org.example.ray.domain.RpcRequest;
-import org.example.ray.domain.RpcResponse;
-import org.example.ray.domain.RpcServiceConfig;
+import org.example.ray.provider.domain.RpcRequest;
+import org.example.ray.provider.domain.RpcResponse;
+import org.example.ray.provider.domain.RpcServiceConfig;
 import org.example.ray.infrastructure.adapter.RpcSendingServiceAdapter;
 
-import lombok.extern.slf4j.Slf4j;
 import org.example.ray.infrastructure.util.LogUtil;
 
 /**

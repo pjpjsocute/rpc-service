@@ -1,6 +1,6 @@
 package org.example.ray.infrastructure.adapter;
 
-import org.example.ray.domain.RpcServiceConfig;
+import org.example.ray.provider.domain.RpcServiceConfig;
 
 import java.util.List;
 

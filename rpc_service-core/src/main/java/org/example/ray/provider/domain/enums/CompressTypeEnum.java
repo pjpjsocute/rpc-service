@@ -1,4 +1,4 @@
-package org.example.ray.domain.enums;
+package org.example.ray.provider.domain.enums;
 
 import lombok.Getter;
 
@@ -7,25 +7,22 @@ import lombok.Getter;
  * @create 2023/5/16
  * @description:
  */
-public enum SerializationTypeEnum {
+public enum CompressTypeEnum {
 
-    KYRO((byte) 0x01, "kyro"),
-    PROTOSTUFF((byte) 0x02, "protostuff"),
-    HESSIAN((byte) 0X03, "hessian");
+    GZIP((byte) 0x01, "gzip");
 
     @Getter
     private final byte code;
-
+    @Getter
     private final String name;
 
-    SerializationTypeEnum(byte code, String name) {
+    CompressTypeEnum(byte code, String name) {
         this.code = code;
-
         this.name = name;
     }
 
     public static String getName(byte code) {
-        for (SerializationTypeEnum c : SerializationTypeEnum.values()) {
+        for (CompressTypeEnum c : CompressTypeEnum.values()) {
             if (c.getCode() == code) {
                 return c.name;
             }

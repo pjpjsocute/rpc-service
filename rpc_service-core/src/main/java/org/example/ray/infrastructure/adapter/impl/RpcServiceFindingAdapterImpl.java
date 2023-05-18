@@ -6,7 +6,7 @@ import java.net.InetSocketAddress;
 import java.util.List;
 
 import org.apache.curator.framework.CuratorFramework;
-import org.example.ray.domain.RpcRequest;
+import org.example.ray.provider.domain.RpcRequest;
 import org.example.ray.enums.LoadBalanceType;
 import org.example.ray.infrastructure.adapter.RpcServiceFindingAdapter;
 import org.example.ray.infrastructure.loadbalance.LoadBalanceStrategy;

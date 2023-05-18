@@ -1,6 +1,6 @@
 package org.example.ray.infrastructure.loadbalance;
 
-import org.example.ray.domain.RpcRequest;
+import org.example.ray.provider.domain.RpcRequest;
 import org.example.ray.enums.LoadBalanceType;
 
 import java.util.List;

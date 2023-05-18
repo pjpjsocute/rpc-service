@@ -2,12 +2,11 @@ package org.example.ray.infrastructure.netty;
 
 import javax.annotation.Resource;
 
-import org.example.ray.constants.RpcConstants;
-import org.example.ray.domain.RpcData;
-import org.example.ray.domain.RpcRequest;
-import org.example.ray.domain.RpcResponse;
-import org.example.ray.domain.enums.CompressTypeEnum;
-import org.example.ray.domain.enums.SerializationTypeEnum;
+import org.example.ray.provider.domain.RpcData;
+import org.example.ray.provider.domain.RpcRequest;
+import org.example.ray.provider.domain.RpcResponse;
+import org.example.ray.provider.domain.enums.CompressTypeEnum;
+import org.example.ray.provider.domain.enums.SerializationTypeEnum;
 import org.example.ray.infrastructure.netty.client.WaitingProcess;
 import org.example.ray.infrastructure.util.LogUtil;
 import org.springframework.stereotype.Component;
@@ -15,7 +14,6 @@ import org.springframework.stereotype.Component;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
 import io.netty.handler.timeout.IdleStateEvent;
-import lombok.extern.slf4j.Slf4j;
 
 /**
  * @author zhoulei
