@@ -12,9 +12,9 @@ import java.net.InetSocketAddress;
 public interface RpcServiceFindingAdapter {
     /**
      * lookup service by rpcServiceName
-     *
+     * todo: can optimize with a cache
      * @param rpcRequest rpc service pojo
      * @return service address
      */
-    InetSocketAddress findService(RpcRequest rpcRequest);
+    InetSocketAddress findServiceAddress(RpcRequest rpcRequest);
 }

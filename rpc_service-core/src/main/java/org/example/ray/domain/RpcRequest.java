@@ -27,7 +27,7 @@ public class RpcRequest implements Serializable {
     /**
      * interface name
      */
-    private String interfaceName;
+    private String serviceName;
     /**
      * method name
      */
@@ -50,7 +50,7 @@ public class RpcRequest implements Serializable {
     private String project;
 
     public String fetchRpcServiceName() {
-        return this.project+ this.getInterfaceName() +  this.getVersion();
+        return this.project+ this.getServiceName() +  this.getVersion();
     }
 
 

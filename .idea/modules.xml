@@ -2,10 +2,9 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/.idea/rpc_service.iml" filepath="$PROJECT_DIR$/.idea/rpc_service.iml" />
-      <module fileurl="file://$PROJECT_DIR$/rpc_service-core.iml" filepath="$PROJECT_DIR$/rpc_service-core.iml" />
-      <module fileurl="file://$PROJECT_DIR$/rpc_service-registration.iml" filepath="$PROJECT_DIR$/rpc_service-registration.iml" />
-      <module fileurl="file://$PROJECT_DIR$/rpc_service-support.iml" filepath="$PROJECT_DIR$/rpc_service-support.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/rpc-service.iml" filepath="$PROJECT_DIR$/.idea/rpc-service.iml" />
+      <module fileurl="file://$PROJECT_DIR$/rpc_service-core/rpc_service-core.iml" filepath="$PROJECT_DIR$/rpc_service-core/rpc_service-core.iml" />
+      <module fileurl="file://$PROJECT_DIR$/rpc_service-support/rpc_service-support.iml" filepath="$PROJECT_DIR$/rpc_service-support/rpc_service-support.iml" />
     </modules>
   </component>
 </project>

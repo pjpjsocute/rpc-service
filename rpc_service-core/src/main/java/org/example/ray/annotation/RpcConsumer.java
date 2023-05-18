@@ -17,7 +17,7 @@ import java.lang.annotation.Target;
 @Documented
 public @interface RpcConsumer {
     /**
-     * Service group, default value is empty string
+     * Service project, default value is empty string
      */
     String project() default "default";
 
@@ -26,4 +26,9 @@ public @interface RpcConsumer {
      * @return
      */
     String version() default "1.0";
+
+    /**
+     * Service group, default value is empty string
+     */
+    String group() default "default";
 }

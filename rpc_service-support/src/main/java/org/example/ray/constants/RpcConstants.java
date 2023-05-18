@@ -29,4 +29,9 @@ public class RpcConstants {
     public static final String PONG = "pong";
     public static final int MAX_FRAME_LENGTH = 8 * 1024 * 1024;
 
+    public static final int VIRTUAL_NODES = 320;
+
+    public static final String LOAD_BALANCE = "hash";
+
+    public static final Integer NETTY_SERVER_PORT = 9998;
 }

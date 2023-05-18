@@ -8,7 +8,6 @@ import org.example.ray.domain.RpcRequest;
 import org.example.ray.domain.RpcResponse;
 import org.example.ray.domain.enums.CompressTypeEnum;
 import org.example.ray.domain.enums.SerializationTypeEnum;
-import org.example.ray.infrastructure.netty.client.WaitingProcess;
 import org.springframework.stereotype.Component;
 
 import io.netty.channel.ChannelHandlerContext;
@@ -23,12 +22,12 @@ import lombok.extern.slf4j.Slf4j;
  */
 @Slf4j
 @Component
-public class NettyRpcClientHandler extends SimpleChannelInboundHandler<RpcData> {
+public class NettyRpcServerHandler extends SimpleChannelInboundHandler<RpcData> {
     /**
      * Read the message transmitted by the server
      */
     @Resource
-    private WaitingProcess waitingProcess;
+    private RpcRequestHandler rpcRequestHandler;
 
     /**
      * heart beat handle
@@ -65,11 +64,10 @@ public class NettyRpcClientHandler extends SimpleChannelInboundHandler<RpcData> 
         RpcData rpcMessage = new RpcData();
         setupRpcMessage(rpcMessage);
 
-        if (rpcData.isHeartBeatResponse()) {
-            log.info("heart [{}]", rpcMessage.getData());
-        } else if (rpcData.isResponse()){
-            RpcResponse<Object> rpcResponse = (RpcResponse<Object>) rpcData.getData();
-            waitingProcess.complete(rpcResponse);
+        if (rpcData.isHeatBeatRequest()) {
+            handleHeartbeat(rpcMessage);
+        } else {
+            handleRpcRequest(ctx, rpcData, rpcMessage);
         }
     }
 
@@ -78,7 +76,21 @@ public class NettyRpcClientHandler extends SimpleChannelInboundHandler<RpcData> 
         rpcMessage.setCompressType(CompressTypeEnum.GZIP.getCode());
     }
 
+    private void handleHeartbeat(RpcData rpcMessage) {
+        rpcMessage.setMessageType(RpcConstants.HEARTBEAT_RESPONSE_TYPE);
+        rpcMessage.setData(RpcConstants.PONG);
+    }
 
+    private void handleRpcRequest(ChannelHandlerContext ctx, RpcData rpcData, RpcData rpcMessage) throws Exception {
+        RpcRequest rpcRequest = (RpcRequest)rpcData.getData();
+
+        // invoke target method
+        Object result = rpcRequestHandler.handle(rpcRequest);
+        log.info("Server get result: {}", result);
+
+        rpcMessage.setMessageType(RpcConstants.RESPONSE_TYPE);
+        buildAndSetRpcResponse(ctx, rpcRequest, rpcMessage, result);
+    }
 
     private void
         buildAndSetRpcResponse(ChannelHandlerContext ctx, RpcRequest rpcRequest, RpcData rpcMessage, Object result) {

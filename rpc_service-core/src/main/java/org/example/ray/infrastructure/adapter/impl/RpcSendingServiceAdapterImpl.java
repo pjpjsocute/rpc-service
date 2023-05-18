@@ -102,10 +102,10 @@ public class RpcSendingServiceAdapterImpl implements RpcSendingServiceAdapter {
         // init return value
         CompletableFuture<RpcResponse<Object>> result = new CompletableFuture<>();
         // get server address
-        // todo: can optimize with a cache
-        InetSocketAddress address = findingAdapter.findService(rpcRequest);
+        //
+        InetSocketAddress address = findingAdapter.findServiceAddress(rpcRequest);
         // get a channel which mapper to a address
-        Channel channel = fetchChannel(address);
+        Channel channel = fetchAndConnectChannel(address);
         if (channel.isActive()) {
             // add to a waitList
             waitingProcess.put(rpcRequest.getTraceId(), result);
@@ -133,7 +133,7 @@ public class RpcSendingServiceAdapterImpl implements RpcSendingServiceAdapter {
         return result;
     }
 
-    private Channel fetchChannel(InetSocketAddress address) {
+    private Channel fetchAndConnectChannel(InetSocketAddress address) {
         Channel channel = addressChannelManager.get(address);
         if (channel == null) {
             // connect to service to get new address and rebuild the channel

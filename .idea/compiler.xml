@@ -9,13 +9,16 @@
         <outputRelativeToContentRoot value="true" />
         <module name="rpc_service-core" />
         <module name="rpc_service-support" />
-        <module name="rpc_service-registration" />
       </profile>
     </annotationProcessing>
     <bytecodeTargetLevel>
       <module name="registration" target="1.8" />
-      <module name="rpc_service" target="1.8" />
+      <module name="rpc-service" target="1.8" />
+      <module name="rpc_service-api" target="1.8" />
       <module name="rpc_service-core" target="1.8" />
+      <module name="rpc_service-example-consumer" target="1.8" />
+      <module name="rpc_service-example-provider" target="1.8" />
+      <module name="rpc_service-ExampleComsumer" target="1.8" />
       <module name="rpc_service-registration" target="1.8" />
       <module name="rpc_service-support" target="1.8" />
     </bytecodeTargetLevel>
@@ -23,9 +26,13 @@
   <component name="JavacSettings">
     <option name="ADDITIONAL_OPTIONS_OVERRIDE">
       <module name="registration" options="-parameters" />
-      <module name="rpc_service" options="" />
+      <module name="rpc-service" options="-parameters" />
+      <module name="rpc_service-ExampleComsumer" options="-parameters" />
+      <module name="rpc_service-api" options="-parameters" />
       <module name="rpc_service-core" options="-parameters" />
-      <module name="rpc_service-registration" options="-parameters" />
+      <module name="rpc_service-example-consumer" options="-parameters" />
+      <module name="rpc_service-example-provider" options="" />
+      <module name="rpc_service-registration" options="" />
       <module name="rpc_service-support" options="-parameters" />
     </option>
   </component>

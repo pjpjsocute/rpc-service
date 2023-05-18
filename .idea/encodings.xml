@@ -1,9 +1,16 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="Encoding">
+    <file url="file://$MAVEN_REPOSITORY$/org/springframework/boot/spring-boot-starter-parent/2.6.5/src/main/resources" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/org.example.rpc.registration/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/rpc_service-ExampleComsumer/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/rpc_service-api/src/main/java" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/rpc_service-core/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/rpc_service-example-consumer/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/rpc_service-example-provider/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/rpc_service-example-provider/src/main/resources" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/rpc_service-registration/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/rpc_service-registration/src/main/resources" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/rpc_service-support/src/main/java" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/src/main/java" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/src/main/resources" charset="UTF-8" />

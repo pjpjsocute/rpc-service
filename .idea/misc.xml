@@ -4,11 +4,15 @@
     <option name="originalFiles">
       <list>
         <option value="$PROJECT_DIR$/pom.xml" />
+        <option value="$PROJECT_DIR$/rpc_service-example-provider/pom.xml" />
+        <option value="$PROJECT_DIR$/rpc_service-core/pom.xml" />
       </list>
     </option>
     <option name="ignoredFiles">
       <set>
         <option value="$PROJECT_DIR$/org.example.rpc.registration/pom.xml" />
+        <option value="$PROJECT_DIR$/rpc_service-ExampleComsumer/pom.xml" />
+        <option value="$PROJECT_DIR$/rpc_service-registration/pom.xml" />
       </set>
     </option>
   </component>

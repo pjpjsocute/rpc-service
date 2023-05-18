@@ -30,9 +30,5 @@ public interface RpcServiceRegistryAdapter {
      */
     List<Object> getServices(String rpcServiceName);
 
-    /**
-     * @param rpcServiceConfig release the service
-     */
-    void releaseService(RpcServiceConfig rpcServiceConfig);
 
 }

@@ -49,4 +49,8 @@ public class RpcData {
     public boolean isHeartBeatResponse() {
         return messageType == RpcConstants.HEARTBEAT_RESPONSE_TYPE;
     }
+
+    public boolean isResponse() {
+        return messageType == RpcConstants.RESPONSE_TYPE;
+    }
 }

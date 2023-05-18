@@ -46,6 +46,7 @@ public class RpcBeanPostProcessor implements BeanPostProcessor {
                 .service(bean)
                 .project(annotation.project())
                 .version(annotation.version())
+                .group(annotation.group())
                 .build();
             adapter.registryService(serviceConfig);
         }
@@ -69,7 +70,7 @@ public class RpcBeanPostProcessor implements BeanPostProcessor {
                 RpcConsumer annotation = declaredField.getAnnotation(RpcConsumer.class);
                 // build rpc service config
                 RpcServiceConfig serviceConfig =
-                    RpcServiceConfig.builder().project(annotation.project()).version(annotation.version()).build();
+                    RpcServiceConfig.builder().project(annotation.project()).version(annotation.version()).group(annotation.group()).build();
                 // create the proxy bean Factory and the proxy bean
                 RpcServiceProxy proxy = new RpcServiceProxy(sendingServiceAdapter, serviceConfig);
                 Object rpcProxy = proxy.getProxy(declaredField.getType());
