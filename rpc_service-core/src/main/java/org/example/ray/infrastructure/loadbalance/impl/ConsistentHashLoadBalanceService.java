@@ -14,6 +14,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import org.example.ray.domain.RpcRequest;
 import org.example.ray.infrastructure.loadbalance.LoadBalanceService;
 import org.example.ray.enums.LoadBalanceType;
+import org.example.ray.infrastructure.util.LogUtil;
 import org.springframework.stereotype.Component;
 
 import lombok.extern.slf4j.Slf4j;
@@ -31,7 +32,7 @@ import lombok.extern.slf4j.Slf4j;
  *               hash ring, thus achieving load balancing.
  */
 @Component
-@Slf4j
+
 public class ConsistentHashLoadBalanceService implements LoadBalanceService {
 
     private final Map<String, ConsistentHashLoadBalanceSelector> serviceToSelectorMap = new ConcurrentHashMap<>();
@@ -91,7 +92,7 @@ public class ConsistentHashLoadBalanceService implements LoadBalanceService {
             messageDigest.update(hashBytes);
             return messageDigest.digest();
         } catch (NoSuchAlgorithmException e) {
-            log.error("No such algorithm exception: {}", e.getMessage());
+            LogUtil.error("No such algorithm exception: {}", e.getMessage());
             throw new RuntimeException(e);
         }
 

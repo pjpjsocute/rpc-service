@@ -17,6 +17,7 @@ import org.example.ray.infrastructure.netty.RpcMessageDecoder;
 import org.example.ray.infrastructure.netty.RpcMessageEncoder;
 import org.example.ray.infrastructure.netty.client.AddressChannelManager;
 import org.example.ray.infrastructure.netty.client.WaitingProcess;
+import org.example.ray.infrastructure.util.LogUtil;
 import org.springframework.stereotype.Component;
 
 import io.netty.bootstrap.Bootstrap;
@@ -39,7 +40,7 @@ import lombok.extern.slf4j.Slf4j;
  * @create 2023/5/16
  * @description:
  */
-@Slf4j
+
 @Component
 public class RpcSendingServiceAdapterImpl implements RpcSendingServiceAdapter {
 
@@ -120,11 +121,11 @@ public class RpcSendingServiceAdapterImpl implements RpcSendingServiceAdapter {
 
             channel.writeAndFlush(rpcData).addListener((ChannelFutureListener)future -> {
                 if (future.isSuccess()) {
-                    log.info("client send message: [{}]", rpcData);
+                    LogUtil.info("client send message: [{}]", rpcData);
                 } else {
                     future.channel().close();
                     result.completeExceptionally(future.cause());
-                    log.error("Send failed:", future.cause());
+                    LogUtil.error("Send failed:", future.cause());
                 }
             });
         } else {
@@ -148,7 +149,7 @@ public class RpcSendingServiceAdapterImpl implements RpcSendingServiceAdapter {
         bootstrap.connect(address).addListener((ChannelFutureListener)future -> {
             if (future.isSuccess()) {
                 // set channel to future
-                log.info("The client has connected [{}] successful!", address.toString());
+                LogUtil.info("The client has connected [{}] successful!", address.toString());
                 completableFuture.complete(future.channel());
             } else {
                 throw new IllegalStateException();
@@ -158,7 +159,7 @@ public class RpcSendingServiceAdapterImpl implements RpcSendingServiceAdapter {
         try {
             channel = completableFuture.get();
         } catch (Exception e) {
-            log.error("occur exception when connect to server:", e);
+            LogUtil.error("occur exception when connect to server:", e);
         }
         return channel;
     }

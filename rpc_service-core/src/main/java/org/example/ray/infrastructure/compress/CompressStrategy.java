@@ -4,6 +4,7 @@ import java.util.Map;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
+import org.example.ray.infrastructure.util.LogUtil;
 import org.springframework.beans.BeansException;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
@@ -17,7 +18,7 @@ import lombok.extern.slf4j.Slf4j;
  * @description:
  */
 @Component
-@Slf4j
+
 public class CompressStrategy implements ApplicationContextAware {
 
     private ApplicationContext         applicationContext;
@@ -60,7 +61,7 @@ public class CompressStrategy implements ApplicationContextAware {
     private CompressService findService(Byte serializationMethod) {
         CompressService compressService = serviceMap.get(serializationMethod);
         if (compressService == null) {
-            log.error("CompressService is null,{}", serializationMethod);
+            LogUtil.error("CompressService is null,{}", serializationMethod);
             throw new RuntimeException("compressService is null");
         }
         return compressService;

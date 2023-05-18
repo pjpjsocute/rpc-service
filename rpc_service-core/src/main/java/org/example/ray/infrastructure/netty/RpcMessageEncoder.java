@@ -8,12 +8,12 @@ import org.example.ray.domain.enums.RpcErrorMessageEnum;
 import org.example.ray.expection.RpcException;
 import org.example.ray.infrastructure.compress.CompressStrategy;
 import org.example.ray.infrastructure.serialize.SerializationStrategy;
+import org.example.ray.infrastructure.util.LogUtil;
 import org.springframework.stereotype.Component;
 
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.MessageToByteEncoder;
-import lombok.extern.slf4j.Slf4j;
 
 /**
  * @author zhoulei
@@ -31,7 +31,7 @@ import lombok.extern.slf4j.Slf4j;
  *               requestId（请求的Id）
  */
 @Component
-@Slf4j
+
 public class RpcMessageEncoder extends MessageToByteEncoder<RpcData> {
 
     @Resource
@@ -66,24 +66,24 @@ public class RpcMessageEncoder extends MessageToByteEncoder<RpcData> {
             int fullLength = RpcConstants.HEAD_LENGTH;
             // can send request
             if (rpcData.canSendRequest()) {
-                log.info("serialize request start");
+                LogUtil.info("serialize request start");
                 bodyBytes = serializationStrategy.serialize(rpcData.getData(), rpcData.getSerializeMethodCodec());
-                log.info("serialize request end");
-                compressStrategy.compress(bodyBytes,rpcData.getCompressType());
+                LogUtil.info("serialize request end");
+                compressStrategy.compress(bodyBytes, rpcData.getCompressType());
                 fullLength += bodyBytes.length;
             }
 
-            if (bodyBytes != null){
+            if (bodyBytes != null) {
                 byteBuf.writeBytes(bodyBytes);
             }
             int writeIndex = byteBuf.writerIndex();
             byteBuf.writerIndex(fullLengthIndex);
             byteBuf.writeInt(fullLength);
             byteBuf.writerIndex(writeIndex);
-        }catch (Exception e){
-            log.error("Encode request error!", e);
+        } catch (Exception e) {
+            LogUtil.error("Encode request error!", e);
             throw new RpcException(RpcErrorMessageEnum.REQUEST_ENCODE_FAIL.getCode(),
-                    RpcErrorMessageEnum.REQUEST_ENCODE_FAIL.getMessage());
+                RpcErrorMessageEnum.REQUEST_ENCODE_FAIL.getMessage());
         }
 
     }

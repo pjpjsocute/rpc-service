@@ -4,6 +4,7 @@ import java.util.Map;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
+import org.example.ray.infrastructure.util.LogUtil;
 import org.springframework.beans.BeansException;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
@@ -17,7 +18,7 @@ import lombok.extern.slf4j.Slf4j;
  * @description:
  */
 @Component
-@Slf4j
+
 public class SerializationStrategy implements ApplicationContextAware {
 
     private ApplicationContext              applicationContext;
@@ -62,7 +63,7 @@ public class SerializationStrategy implements ApplicationContextAware {
     private SerializationService findService(Byte serializationMethod) {
         SerializationService serializationService = serviceMap.get(serializationMethod);
         if (serializationService == null) {
-            log.error("SerializationService is null,{}", serializationMethod);
+            LogUtil.error("SerializationService is null,{}", serializationMethod);
             throw new RuntimeException("serializationService is null");
         }
         return serializationService;

@@ -11,6 +11,9 @@
     <modules>
         <module>rpc_service-core</module>
         <module>rpc_service-support</module>
+        <module>rpc-test-api</module>
+        <module>rpc-test-provider</module>
+        <module>rpc-test-consumer</module>
     </modules>
 
     <properties>

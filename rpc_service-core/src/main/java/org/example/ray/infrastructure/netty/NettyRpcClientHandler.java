@@ -9,6 +9,7 @@ import org.example.ray.domain.RpcResponse;
 import org.example.ray.domain.enums.CompressTypeEnum;
 import org.example.ray.domain.enums.SerializationTypeEnum;
 import org.example.ray.infrastructure.netty.client.WaitingProcess;
+import org.example.ray.infrastructure.util.LogUtil;
 import org.springframework.stereotype.Component;
 
 import io.netty.channel.ChannelHandlerContext;
@@ -21,7 +22,7 @@ import lombok.extern.slf4j.Slf4j;
  * @create 2023/5/16
  * @description:
  */
-@Slf4j
+
 @Component
 public class NettyRpcClientHandler extends SimpleChannelInboundHandler<RpcData> {
     /**
@@ -41,7 +42,7 @@ public class NettyRpcClientHandler extends SimpleChannelInboundHandler<RpcData> 
     public void userEventTriggered(ChannelHandlerContext ctx, Object evt) throws Exception {
         // if the channel is free，close it
         if (evt instanceof IdleStateEvent) {
-            log.info("IdleStateEvent happen, so close the connection");
+            LogUtil.info("IdleStateEvent happen, so close the connection");
             ctx.channel().close();
         } else {
             super.userEventTriggered(ctx, evt);
@@ -53,20 +54,20 @@ public class NettyRpcClientHandler extends SimpleChannelInboundHandler<RpcData> 
      */
     @Override
     public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) {
-        log.error("server exceptionCaught");
+        LogUtil.error("server exceptionCaught");
         cause.printStackTrace();
         ctx.close();
     }
 
     @Override
     protected void channelRead0(ChannelHandlerContext ctx, RpcData rpcData) throws Exception {
-        log.info("Server receive message: [{}]", rpcData);
+        LogUtil.info("Server receive message: [{}]", rpcData);
         byte messageType = rpcData.getMessageType();
         RpcData rpcMessage = new RpcData();
         setupRpcMessage(rpcMessage);
 
         if (rpcData.isHeartBeatResponse()) {
-            log.info("heart [{}]", rpcMessage.getData());
+            LogUtil.info("heart [{}]", rpcMessage.getData());
         } else if (rpcData.isResponse()){
             RpcResponse<Object> rpcResponse = (RpcResponse<Object>) rpcData.getData();
             waitingProcess.complete(rpcResponse);
@@ -90,7 +91,7 @@ public class NettyRpcClientHandler extends SimpleChannelInboundHandler<RpcData> 
             // 如果通道不可写，则构建失败的RPC响应
             RpcResponse<Object> rpcResponse = RpcResponse.fail();
             rpcMessage.setData(rpcResponse);
-            log.error("Not writable now, message dropped,message:{}", rpcRequest);
+            LogUtil.error("Not writable now, message dropped,message:{}", rpcRequest);
         }
     }
 

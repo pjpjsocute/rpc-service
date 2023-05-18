@@ -7,6 +7,7 @@ import org.example.ray.domain.RpcRequest;
 import org.example.ray.domain.enums.RpcErrorMessageEnum;
 import org.example.ray.expection.RpcException;
 import org.example.ray.infrastructure.adapter.RpcServiceRegistryAdapter;
+import org.example.ray.infrastructure.util.LogUtil;
 import org.springframework.stereotype.Component;
 
 import lombok.extern.slf4j.Slf4j;
@@ -17,7 +18,7 @@ import lombok.extern.slf4j.Slf4j;
  * @author shuang.kou
  * @createTime 2020年05月13日 09:05:00
  */
-@Slf4j
+
 @Component
 public class RpcRequestHandler {
 
@@ -48,11 +49,11 @@ public class RpcRequestHandler {
         try {
             Method method = service.getClass().getMethod(rpcRequest.getMethodName(), rpcRequest.getParamTypes());
             result = method.invoke(service, rpcRequest.getParameters());
-            log.info("service:[{}] successful invoke method:[{}]", rpcRequest.getServiceName(),
+            LogUtil.info("service:[{}] successful invoke method:[{}]", rpcRequest.getServiceName(),
                 rpcRequest.getMethodName());
         } catch (NoSuchMethodException | IllegalArgumentException | InvocationTargetException
             | IllegalAccessException e) {
-            log.error("occur exception when invoke target method,error:{},RpcRequest:{}", e, rpcRequest);
+            LogUtil.error("occur exception when invoke target method,error:{},RpcRequest:{}", e, rpcRequest);
             throw new RpcException(RpcErrorMessageEnum.SERVICE_INVOCATION_FAILURE.getCode(), RpcErrorMessageEnum.SERVICE_INVOCATION_FAILURE.getMessage());
         }
         return result;

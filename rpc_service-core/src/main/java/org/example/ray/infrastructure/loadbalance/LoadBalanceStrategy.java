@@ -7,6 +7,7 @@ import java.util.stream.Collectors;
 
 import org.example.ray.domain.RpcRequest;
 import org.example.ray.enums.LoadBalanceType;
+import org.example.ray.infrastructure.util.LogUtil;
 import org.springframework.beans.BeansException;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
@@ -20,7 +21,7 @@ import lombok.extern.slf4j.Slf4j;
  * @description:
  */
 @Component
-@Slf4j
+
 public class LoadBalanceStrategy implements ApplicationContextAware {
 
     private ApplicationContext         applicationContext;
@@ -55,7 +56,7 @@ public class LoadBalanceStrategy implements ApplicationContextAware {
     private LoadBalanceService findService(LoadBalanceType loadBalanceType) {
         LoadBalanceService loadBalanceService = serviceMap.get(loadBalanceType);
         if (loadBalanceService == null) {
-            log.error("oad balance Service is null,{}", loadBalanceType);
+            LogUtil.error("oad balance Service is null,{}", loadBalanceType);
             throw new RuntimeException("load balanceService is null");
         }
         return loadBalanceService;

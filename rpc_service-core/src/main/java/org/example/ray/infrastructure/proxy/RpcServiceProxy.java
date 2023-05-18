@@ -12,13 +12,14 @@ import org.example.ray.domain.RpcServiceConfig;
 import org.example.ray.infrastructure.adapter.RpcSendingServiceAdapter;
 
 import lombok.extern.slf4j.Slf4j;
+import org.example.ray.infrastructure.util.LogUtil;
 
 /**
  * @author zhoulei
  * @create 2023/5/16
  * @description:
  */
-@Slf4j
+
 public class RpcServiceProxy implements InvocationHandler {
 
     private final RpcSendingServiceAdapter sendingServiceAdapter;
@@ -32,7 +33,7 @@ public class RpcServiceProxy implements InvocationHandler {
 
     @Override
     public Object invoke(Object proxy, Method method, Object[] args) {
-        log.info("invoked method: [{}]", method.getName());
+        LogUtil.info("invoked method: [{}]", method.getName());
         RpcRequest rpcRequest = RpcRequest.builder()
             .methodName(method.getName())
             .parameters(args)
@@ -52,7 +53,7 @@ public class RpcServiceProxy implements InvocationHandler {
             rpcResponse = completableFuture.get();
             return rpcResponse.getData();
         } catch (Exception e) {
-            log.error("occur exception:", e);
+            LogUtil.error("occur exception:", e);
         }
         return null;
     }

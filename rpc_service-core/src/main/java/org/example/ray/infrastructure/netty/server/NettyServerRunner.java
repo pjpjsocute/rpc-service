@@ -9,14 +9,14 @@ import org.springframework.stereotype.Component;
  * @create 2023/5/17
  * @description:
  */
-//@Component
-//public class NettyServerRunner implements CommandLineRunner {
-//
-//    @Autowired
-//    private NettyServer nettyRpcServer;
-//
-//    @Override
-//    public void run(String... args) throws Exception {
-//        nettyRpcServer.start();
-//    }
-//}
+@Component
+public class NettyServerRunner implements CommandLineRunner {
+
+    @Autowired
+    private NettyServer nettyRpcServer;
+
+    @Override
+    public void run(String... args) throws Exception {
+        nettyRpcServer.start();
+    }
+}

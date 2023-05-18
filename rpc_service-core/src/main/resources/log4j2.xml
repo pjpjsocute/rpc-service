@@ -3,18 +3,19 @@
     <Appenders>
         <!--*********************控制台日志***********************-->
         <Console name="consoleAppender" target="SYSTEM_OUT">
-            <PatternLayout pattern="%d{HH:mm:ss.SSS} [%t] %-5level %logger{36} - %msg%n"/>
+            <!--设置日志格式及颜色-->
+            <PatternLayout
+                    pattern="%d{ISO8601} %-5level%notEmpty{ [%X{traceId}]} [%t] %C{}: %msg%n%throwable"
+                    disableAnsi="false" noConsoleNoAnsi="false"/>
         </Console>
-
     </Appenders>
 
     <Loggers>
         <!-- 根日志设置 -->
-        <Root level="info">
-            <AppenderRef ref="consoleAppender"/>
+        <Root level="debug">
+            <AppenderRef ref="consoleAppender" level="debug"/>
         </Root>
 
     </Loggers>
-
 
 </Configuration>

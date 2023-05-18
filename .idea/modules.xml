@@ -3,6 +3,9 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/.idea/rpc-service.iml" filepath="$PROJECT_DIR$/.idea/rpc-service.iml" />
+      <module fileurl="file://$PROJECT_DIR$/rpc-test-api/rpc-test-api.iml" filepath="$PROJECT_DIR$/rpc-test-api/rpc-test-api.iml" />
+      <module fileurl="file://$PROJECT_DIR$/rpc-test-consumer/rpc-test-consumer.iml" filepath="$PROJECT_DIR$/rpc-test-consumer/rpc-test-consumer.iml" />
+      <module fileurl="file://$PROJECT_DIR$/rpc-test-provider/rpc-test-provider.iml" filepath="$PROJECT_DIR$/rpc-test-provider/rpc-test-provider.iml" />
       <module fileurl="file://$PROJECT_DIR$/rpc_service-core/rpc_service-core.iml" filepath="$PROJECT_DIR$/rpc_service-core/rpc_service-core.iml" />
       <module fileurl="file://$PROJECT_DIR$/rpc_service-support/rpc_service-support.iml" filepath="$PROJECT_DIR$/rpc_service-support/rpc_service-support.iml" />
     </modules>

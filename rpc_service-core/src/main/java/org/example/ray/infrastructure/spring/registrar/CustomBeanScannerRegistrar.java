@@ -1,11 +1,10 @@
 package org.example.ray.infrastructure.spring.registrar;
 
-import lombok.extern.slf4j.Slf4j;
-
 import org.example.ray.annotation.RpcConsumer;
 import org.example.ray.annotation.RpcProvider;
 import org.example.ray.annotation.SimpleRpcApplication;
 import org.example.ray.infrastructure.spring.scanner.RpcBeanScanner;
+import org.example.ray.infrastructure.util.LogUtil;
 import org.springframework.beans.factory.support.BeanDefinitionRegistry;
 import org.springframework.context.ResourceLoaderAware;
 import org.springframework.context.annotation.ImportBeanDefinitionRegistrar;
@@ -18,7 +17,7 @@ import org.springframework.core.type.AnnotationMetadata;
  * @create 2023/5/16
  * @description: Custom registrar for scanning and registering annotated beans
  */
-@Slf4j
+
 public class CustomBeanScannerRegistrar implements ImportBeanDefinitionRegistrar, ResourceLoaderAware {
 
     private ResourceLoader resourceLoader;
@@ -37,7 +36,7 @@ public class CustomBeanScannerRegistrar implements ImportBeanDefinitionRegistrar
         if (scanBasePackages.length == 0) {
             scanBasePackages = new String[]{((org.springframework.core.type.StandardAnnotationMetadata) importingClassMetadata).getIntrospectedClass().getPackage().getName()};
         }
-        log.info("scanning packages: [{}]", (Object) scanBasePackages);
+        LogUtil.info("scanning packages: [{}]", (Object) scanBasePackages);
         //scan the package and register the bean
         RpcBeanScanner rpcConsumerBeanScanner = new RpcBeanScanner(registry, RpcConsumer.class);
         RpcBeanScanner rpcProviderBeanScanner = new RpcBeanScanner(registry, RpcProvider.class);
@@ -45,7 +44,7 @@ public class CustomBeanScannerRegistrar implements ImportBeanDefinitionRegistrar
             rpcConsumerBeanScanner.setResourceLoader(resourceLoader);
             rpcProviderBeanScanner.setResourceLoader(resourceLoader);
         }
-        log.info("scanning RpcConsumer annotated beans end");
+        LogUtil.info("scanning RpcConsumer annotated beans end");
     }
 
     @Override

@@ -7,6 +7,7 @@ import org.example.ray.infrastructure.config.ServerShutdownHook;
 import org.example.ray.infrastructure.netty.NettyRpcClientHandler;
 import org.example.ray.infrastructure.netty.RpcMessageDecoder;
 import org.example.ray.infrastructure.netty.RpcMessageEncoder;
+import org.example.ray.infrastructure.util.LogUtil;
 import org.example.ray.infrastructure.util.ThreadPoolFactoryUtil;
 import org.springframework.stereotype.Component;
 
@@ -33,7 +34,7 @@ import javax.annotation.Resource;
  * @description: netty server listening the client side and run the rpc service
  */
 @Component
-@Slf4j
+
 public class NettyServer {
 
     public static final int                 PORT = 9999;
@@ -82,9 +83,9 @@ public class NettyServer {
             // close
             f.channel().closeFuture().sync();
         }catch (Exception e){
-            log.error("occur exception when start server:", e);
+            LogUtil.error("occur exception when start server:", e);
         }finally {
-            log.error("shutdown bossGroup and workerGroup");
+            LogUtil.error("shutdown bossGroup and workerGroup");
             listenerGroup.shutdownGracefully();
             workerGroup.shutdownGracefully();
             businessGroup.shutdownGracefully();

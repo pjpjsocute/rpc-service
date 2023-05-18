@@ -2,6 +2,7 @@ package org.example.ray.infrastructure.netty.client;
 
 import io.netty.channel.Channel;
 import lombok.extern.slf4j.Slf4j;
+import org.example.ray.infrastructure.util.LogUtil;
 
 import java.net.InetSocketAddress;
 import java.util.Map;
@@ -12,7 +13,7 @@ import java.util.concurrent.ConcurrentHashMap;
  * @create 2023/5/16
  * @description:
  */
-@Slf4j
+
 public class AddressChannelManager {
 
     private final Map<String, Channel> channelMap;
@@ -44,6 +45,6 @@ public class AddressChannelManager {
     public void remove(InetSocketAddress inetSocketAddress) {
         String key = inetSocketAddress.toString();
         channelMap.remove(key);
-        log.info("Channel map size :[{}]", channelMap.size());
+        LogUtil.info("Channel map size :[{}]", channelMap.size());
     }
 }

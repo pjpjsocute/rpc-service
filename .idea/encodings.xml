@@ -3,6 +3,11 @@
   <component name="Encoding">
     <file url="file://$MAVEN_REPOSITORY$/org/springframework/boot/spring-boot-starter-parent/2.6.5/src/main/resources" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/org.example.rpc.registration/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/rpc-test-api/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/rpc-test-api/src/main/resources" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/rpc-test-consumer/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/rpc-test-consumer/src/main/resources" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/rpc-test-provider/src/main/java" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/rpc_service-ExampleComsumer/src/main/java" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/rpc_service-api/src/main/java" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/rpc_service-core/src/main/java" charset="UTF-8" />

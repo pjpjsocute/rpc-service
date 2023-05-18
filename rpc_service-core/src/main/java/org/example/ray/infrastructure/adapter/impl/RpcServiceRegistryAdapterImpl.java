@@ -12,6 +12,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import org.apache.curator.framework.CuratorFramework;
 import org.example.ray.domain.RpcServiceConfig;
 import org.example.ray.infrastructure.adapter.RpcServiceRegistryAdapter;
+import org.example.ray.infrastructure.util.LogUtil;
 import org.example.ray.infrastructure.zk.util.CuratorUtils;
 import org.springframework.stereotype.Component;
 
@@ -24,7 +25,7 @@ import lombok.extern.slf4j.Slf4j;
  *               the implementation of the registration center
  */
 @Component
-@Slf4j
+
 public class RpcServiceRegistryAdapterImpl implements RpcServiceRegistryAdapter {
 
     private final Map<String, Object> serviceMap = new ConcurrentHashMap<>();
@@ -40,7 +41,7 @@ public class RpcServiceRegistryAdapterImpl implements RpcServiceRegistryAdapter 
             registerServiceToZk(rpcServiceConfig.getRpcServiceName(),
                 new InetSocketAddress(hostAddress, NETTY_SERVER_PORT));
         } catch (UnknownHostException e) {
-            log.error("occur exception when getHostAddress", e);
+            LogUtil.error("occur exception when getHostAddress", e);
             throw new RuntimeException(e);
         }
 
