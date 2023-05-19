@@ -8,6 +8,7 @@ import java.nio.charset.StandardCharsets;
 import java.util.Properties;
 
 import lombok.extern.slf4j.Slf4j;
+import org.example.ray.enums.RpcConfigEnum;
 
 /**
  * @author shuang.kou
@@ -33,5 +34,10 @@ public final class PropertiesFileUtil {
             log.error("occur exception when read properties file [{}]", fileName);
         }
         return properties;
+    }
+
+    public static Integer readPortFromProperties(){
+        Properties properties = PropertiesFileUtil.readPropertiesFile(RpcConfigEnum.RPC_CONFIG_PATH.getPropertyValue());
+        return Integer.parseInt(properties.getProperty(RpcConfigEnum.NETTY_PORT.getPropertyValue()));
     }
 }

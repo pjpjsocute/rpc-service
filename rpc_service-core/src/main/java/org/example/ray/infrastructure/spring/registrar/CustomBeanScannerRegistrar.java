@@ -49,7 +49,6 @@ public class CustomBeanScannerRegistrar implements ImportBeanDefinitionRegistrar
             rpcProviderBeanScanner.setResourceLoader(resourceLoader);
         }
         int rpcServiceCount = rpcProviderBeanScanner.scan(scanBasePackages);
-        springBeanScanner.scan(SPRING_BEAN_BASE_PACKAGE);
         LogUtil.info("rpcServiceScanner扫描的数量 [{}]", rpcServiceCount);
         LogUtil.info("scanning RpcConsumer annotated beans end");
     }

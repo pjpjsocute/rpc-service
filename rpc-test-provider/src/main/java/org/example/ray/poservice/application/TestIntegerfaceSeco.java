@@ -10,7 +10,7 @@ import org.example.ray.model.request.RequestDto;
  * @create 2023/5/18
  * @description:
  */
-@RpcProvider(serviceName = "TestInterface", group = "test2", version = "1.0")
+@RpcProvider(group = "test2", version = "1.5")
 public class TestIntegerfaceSeco implements TestInterface {
     @Override
     public String testGetString(String name) {

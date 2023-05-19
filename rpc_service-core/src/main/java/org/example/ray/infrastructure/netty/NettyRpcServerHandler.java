@@ -2,6 +2,7 @@ package org.example.ray.infrastructure.netty;
 
 import javax.annotation.Resource;
 
+import io.netty.handler.timeout.IdleState;
 import org.example.ray.constants.RpcConstants;
 import org.example.ray.domain.RpcData;
 import org.example.ray.domain.RpcRequest;
@@ -44,8 +45,11 @@ public class NettyRpcServerHandler extends SimpleChannelInboundHandler<RpcData> 
     public void userEventTriggered(ChannelHandlerContext ctx, Object evt) throws Exception {
         // if the channel is free，close it
         if (evt instanceof IdleStateEvent) {
-            LogUtil.info("IdleStateEvent happen, so close the connection");
-            ctx.channel().close();
+            IdleState state = ((IdleStateEvent) evt).state();
+            if (state == IdleState.READER_IDLE) {
+                LogUtil.info("idle check happen, so close the connection");
+                ctx.close();
+            }
         } else {
             super.userEventTriggered(ctx, evt);
         }

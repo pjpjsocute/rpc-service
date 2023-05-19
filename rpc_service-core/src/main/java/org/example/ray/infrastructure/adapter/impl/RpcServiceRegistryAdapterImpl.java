@@ -14,6 +14,7 @@ import org.example.ray.infrastructure.adapter.RpcServiceRegistryAdapter;
 import org.example.ray.infrastructure.util.LogUtil;
 import org.example.ray.infrastructure.zk.util.CuratorUtils;
 import org.example.ray.domain.enums.RpcErrorMessageEnum;
+import org.example.ray.util.PropertiesFileUtil;
 
 /**
  * @author zhoulei
@@ -36,7 +37,7 @@ public class RpcServiceRegistryAdapterImpl implements RpcServiceRegistryAdapter 
             // add service to zk
             LogUtil.info("add service to zk,service name{},host:{}", rpcServiceConfig.getRpcServiceName(),hostAddress);
             registerServiceToZk(rpcServiceConfig.getRpcServiceName(),
-                new InetSocketAddress(hostAddress, PropertiesReader.getNettyServerPort()));
+                new InetSocketAddress(hostAddress, PropertiesFileUtil.readPortFromProperties()));
         } catch (UnknownHostException e) {
             LogUtil.error("occur exception when getHostAddress", e);
             throw new RuntimeException(e);

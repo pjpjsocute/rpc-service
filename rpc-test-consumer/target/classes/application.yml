@@ -14,7 +14,7 @@ server:
 
 netty:
   server:
-    port: 9998
+    port: 21150
 logging:
   level:
     root: INFO

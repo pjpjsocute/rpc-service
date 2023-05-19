@@ -141,6 +141,7 @@ public class RpcSendingServiceAdapterImpl implements RpcSendingServiceAdapter {
                 LogUtil.info("The client has connected [{}] successful!", address.toString());
                 completableFuture.complete(future.channel());
             } else {
+                LogUtil.error("The client failed to connect to the server [{}],future", address.toString(),future);
                 throw new IllegalStateException();
             }
         });

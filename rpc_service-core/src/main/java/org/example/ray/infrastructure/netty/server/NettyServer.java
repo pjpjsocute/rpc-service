@@ -11,6 +11,7 @@ import org.example.ray.infrastructure.netty.RpcMessageDecoder;
 import org.example.ray.infrastructure.netty.RpcMessageEncoder;
 import org.example.ray.infrastructure.util.LogUtil;
 import org.example.ray.infrastructure.util.ThreadPoolFactoryUtil;
+import org.example.ray.util.PropertiesFileUtil;
 import org.springframework.stereotype.Component;
 
 import io.netty.bootstrap.ServerBootstrap;
@@ -37,14 +38,13 @@ import javax.annotation.PostConstruct;
 @Component
 public class NettyServer {
 
-    private NettyRpcServerHandler nettyRpcServerHandler;
-
-
     public NettyServer() {
-        nettyRpcServerHandler = SingletonFactory.getInstance(NettyRpcServerHandler.class);
+
     }
 
     public void start() {
+        LogUtil.info("netty server init");
+        NettyRpcServerHandler  nettyRpcServerHandler= SingletonFactory.getInstance(NettyRpcServerHandler.class);
         // first clear the registry
         ServerShutdownHook.getInstance().registerShutdownHook();
 
@@ -57,7 +57,7 @@ public class NettyServer {
                 Runtime.getRuntime().availableProcessors() * 2,
                 ThreadPoolFactoryUtil.createThreadFactory("netty-server-business-group", false)
         );;
-
+        LogUtil.info("netty server start");
         //start the server
         try {
             ServerBootstrap serverBootstrap = new ServerBootstrap();
@@ -79,12 +79,15 @@ public class NettyServer {
                                     pipeline.addLast(businessGroup, nettyRpcServerHandler);
                                 }
                             });
-
+            LogUtil.info("netty server start successfully");
+            LogUtil.info("netty server bind port");
             String host = InetAddress.getLocalHost().getHostAddress();
             // bind port
-            ChannelFuture f = serverBootstrap.bind(host, PropertiesReader.getNettyServerPort()).sync();
+            ChannelFuture f = serverBootstrap.bind(host, PropertiesFileUtil.readPortFromProperties()).sync();
             // close
+
             f.channel().closeFuture().sync();
+            LogUtil.info("netty server close");
         }catch (Exception e){
             LogUtil.error("occur exception when start server:", e);
         }finally {

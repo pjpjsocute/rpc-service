@@ -12,7 +12,7 @@ server:
   port: 20001
 netty:
   server:
-    port: 9999
+    port: 20050
 logging:
   level:
     root: INFO

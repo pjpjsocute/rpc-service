@@ -13,7 +13,7 @@ public enum RpcConfigEnum {
 
     SPRING_CONFIG_PATH("application.yml"),
 
-    NETTY_PORT("NETTY.PORT");
+    NETTY_PORT("netty.port");
 
     private final String propertyValue;
 

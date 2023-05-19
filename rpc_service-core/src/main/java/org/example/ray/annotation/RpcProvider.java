@@ -32,5 +32,4 @@ public @interface RpcProvider {
      */
     String group() default "default";
 
-    String serviceName() ;
 }

@@ -8,6 +8,8 @@ import org.example.ray.domain.enums.RpcErrorMessageEnum;
 import org.example.ray.domain.enums.ServiceRegistryEnum;
 import org.example.ray.expection.RpcException;
 import org.example.ray.infrastructure.adapter.RpcServiceRegistryAdapter;
+import org.example.ray.infrastructure.adapter.impl.RpcServiceRegistryAdapterImpl;
+import org.example.ray.infrastructure.factory.SingletonFactory;
 import org.example.ray.infrastructure.spi.ExtensionLoader;
 import org.example.ray.infrastructure.util.LogUtil;
 import org.springframework.stereotype.Component;
@@ -24,7 +26,7 @@ public class RpcRequestHandler {
     private final RpcServiceRegistryAdapter adapter;
 
     public RpcRequestHandler() {
-        this.adapter = ExtensionLoader.getExtensionLoader(RpcServiceRegistryAdapter.class).getExtension(ServiceRegistryEnum.ZK.getName());
+        this.adapter = SingletonFactory.getInstance(RpcServiceRegistryAdapterImpl.class);
     }
 
     /**
