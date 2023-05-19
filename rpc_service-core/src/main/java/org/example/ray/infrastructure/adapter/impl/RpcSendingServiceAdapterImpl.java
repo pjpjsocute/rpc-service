@@ -13,11 +13,11 @@ import org.example.ray.domain.enums.SerializationTypeEnum;
 import org.example.ray.domain.enums.ServiceDiscoveryEnum;
 import org.example.ray.infrastructure.adapter.RpcSendingServiceAdapter;
 import org.example.ray.infrastructure.adapter.RpcServiceFindingAdapter;
-import org.example.ray.infrastructure.factory.SingletonFactory;
-import org.example.ray.infrastructure.netty.client.NettyRpcClientHandler;
 import org.example.ray.infrastructure.coder.RpcMessageDecoder;
 import org.example.ray.infrastructure.coder.RpcMessageEncoder;
+import org.example.ray.infrastructure.factory.SingletonFactory;
 import org.example.ray.infrastructure.netty.client.AddressChannelManager;
+import org.example.ray.infrastructure.netty.client.NettyRpcClientHandler;
 import org.example.ray.infrastructure.netty.client.WaitingProcessRequestQueue;
 import org.example.ray.infrastructure.spi.ExtensionLoader;
 import org.example.ray.util.LogUtil;
@@ -54,10 +54,19 @@ public class RpcSendingServiceAdapterImpl implements RpcSendingServiceAdapter {
      */
     private final Bootstrap                  bootstrap;
 
+    /**
+     * Service discovery
+     */
     private final RpcServiceFindingAdapter   findingAdapter;
 
+    /**
+     * Channel manager,mapping channel and address
+     */
     private final AddressChannelManager      addressChannelManager;
 
+    /**
+     * Waiting process request queue
+     */
     private final WaitingProcessRequestQueue waitingProcessRequestQueue;
 
     public RpcSendingServiceAdapterImpl() {

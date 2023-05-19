@@ -1,8 +1,6 @@
 package org.example.ray.infrastructure.loadbalance;
 
-import lombok.extern.slf4j.Slf4j;
 import org.example.ray.domain.RpcRequest;
-import org.example.ray.enums.LoadBalanceType;
 import org.example.ray.infrastructure.spi.SPI;
 
 import java.util.List;

@@ -10,7 +10,7 @@ import org.example.ray.domain.RpcRequest;
 import org.example.ray.infrastructure.adapter.RpcServiceFindingAdapter;
 import org.example.ray.infrastructure.loadbalance.LoadBalanceService;
 import org.example.ray.infrastructure.spi.ExtensionLoader;
-import org.example.ray.infrastructure.zk.util.CuratorUtils;
+import org.example.ray.infrastructure.zk.CuratorClient;
 
 /**
  * @author zhoulei
@@ -29,8 +29,8 @@ public class RpcServiceFindingAdapterImpl implements RpcServiceFindingAdapter {
     @Override
     public InetSocketAddress findServiceAddress(RpcRequest rpcRequest) {
         String serviceName = rpcRequest.fetchRpcServiceName();
-        CuratorFramework zkClient = CuratorUtils.getZkClient();
-        List<String> serviceAddresseList = CuratorUtils.getChildrenNodes(zkClient, serviceName);
+        CuratorFramework zkClient = CuratorClient.getZkClient();
+        List<String> serviceAddresseList = CuratorClient.getChildrenNodes(zkClient, serviceName);
 
 
         String service = loadBalanceService.selectServiceAddress(serviceAddresseList, rpcRequest);

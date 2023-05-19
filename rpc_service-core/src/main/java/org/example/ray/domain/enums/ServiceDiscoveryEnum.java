@@ -4,8 +4,9 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 
 /**
- * @Author xiaobiaoxu
- * @Date 2023年02月24日 15:33
+ * @author zhoulei
+ * @create 2023/5/16
+ * @description:  service discovery type
  */
 @AllArgsConstructor
 @Getter

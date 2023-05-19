@@ -5,13 +5,31 @@ import lombok.Getter;
 /**
  * @author zhoulei
  * @create 2023/5/16
- * @description:
+ * @description: SerializationType
  */
 public enum SerializationTypeEnum {
 
+    /**
+     * kyro
+     */
     KYRO((byte) 0x01, "kyro"),
+    /**
+     * protostuff
+     */
     PROTOSTUFF((byte) 0x02, "protostuff"),
-    HESSIAN((byte) 0X03, "hessian");
+    /**
+     * hessian
+     */
+    HESSIAN((byte) 0X03, "hessian"),
+    /**
+     * json
+     */
+    JSON((byte) 0x04, "json"),
+    /**
+     * xml
+     */
+    XML((byte) 0x05, "xml");
+    ;
 
     @Getter
     private final byte code;
@@ -20,7 +38,6 @@ public enum SerializationTypeEnum {
 
     SerializationTypeEnum(byte code, String name) {
         this.code = code;
-
         this.name = name;
     }
 
@@ -28,15 +45,6 @@ public enum SerializationTypeEnum {
         for (SerializationTypeEnum c : SerializationTypeEnum.values()) {
             if (c.getCode() == code) {
                 return c.name;
-            }
-        }
-        return null;
-    }
-
-    public static SerializationTypeEnum getEnum(byte code) {
-        for (SerializationTypeEnum c : SerializationTypeEnum.values()) {
-            if (c.getCode() == code) {
-                return c;
             }
         }
         return null;

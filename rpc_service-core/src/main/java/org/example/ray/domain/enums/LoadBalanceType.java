@@ -1,6 +1,5 @@
-package org.example.ray.enums;
+package org.example.ray.domain.enums;
 
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 
 /**

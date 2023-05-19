@@ -6,12 +6,24 @@ package org.example.ray.enums;
  * @description:
  */
 public enum RpcResponseCodeEnum {
+    /**
+     * success
+     */
     SUCCESS(200, "success"),
 
-    FAIL(500, "fail");;
+    /**
+     * fail
+     */
+    FAIL(500, "fail");
 
+    /**
+     * code
+     */
     private final Integer code;
 
+    /**
+     * message
+     */
     private final String message;
 
     RpcResponseCodeEnum(Integer code, String message) {

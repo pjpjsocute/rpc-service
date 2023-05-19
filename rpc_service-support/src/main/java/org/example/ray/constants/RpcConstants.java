@@ -1,42 +1,66 @@
 package org.example.ray.constants;
 
-import static org.example.ray.enums.RpcConfigEnum.NETTY_PORT;
-import static org.example.ray.enums.RpcConfigEnum.RPC_CONFIG_PATH;
-
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 
-import org.example.ray.util.PropertiesFileUtil;
-
 /**
- * @author wangtao .
- * @createTime on 2020/10/2
+ * @author zhoulei
+ * @create 2023/5/17
+ * @description: constants
  */
 public class RpcConstants {
-
 
     /**
      * Magic number. Verify RpcMessage
      */
-    public static final byte[] MAGIC_NUMBER = {(byte) 'g', (byte) 'r', (byte) 'p', (byte) 'c'};
-    public static final Charset DEFAULT_CHARSET = StandardCharsets.UTF_8;
-    //version information
-    public static final byte VERSION = 1;
-    public static final byte TOTAL_LENGTH = 16;
-    public static final byte REQUEST_TYPE = 1;
-    public static final byte RESPONSE_TYPE = 2;
-    //ping
-    public static final byte HEARTBEAT_REQUEST_TYPE = 3;
-    //pong
-    public static final byte HEARTBEAT_RESPONSE_TYPE = 4;
-    public static final int HEAD_LENGTH = 16;
-    public static final String PING = "ping";
-    public static final String PONG = "pong";
-    public static final int MAX_FRAME_LENGTH = 8 * 1024 * 1024;
+    public static final byte[]  MAGIC_NUMBER            = {(byte)'g', (byte)'r', (byte)'p', (byte)'c'};
 
-    public static final int VIRTUAL_NODES = 320;
+    /**
+     * DEFAULT_CHARSET
+     */
+    public static final Charset DEFAULT_CHARSET         = StandardCharsets.UTF_8;
+    /**
+     * message protocol version
+     */
+    public static final byte    VERSION                 = 1;
 
-    public static final String LOAD_BALANCE = "hash";
+    /**
+     * Request
+     */
+    public static final byte    REQUEST_TYPE            = 1;
 
-    public static final Integer NETTY_SERVER_PORT = null;
+    /**
+     * Response
+     */
+    public static final byte    RESPONSE_TYPE           = 2;
+
+    /**
+     * heat request return ping
+     */
+    public static final byte    HEARTBEAT_REQUEST_TYPE  = 3;
+
+    /**
+     * heat response return pong
+     */
+    public static final byte    HEARTBEAT_RESPONSE_TYPE = 4;
+
+    public static final String  PING                    = "ping";
+
+    public static final String  PONG                    = "pong";
+
+    /**
+     * message protocol head length
+     */
+    public static final int     HEAD_LENGTH             = 16;
+
+    /**
+     * load Balance configuration node number
+     */
+    public static final int     VIRTUAL_NODES           = 320;
+
+    /**
+     * LOAD BALANCE way
+     */
+    public static final String  LOAD_BALANCE            = "hash";
+
 }

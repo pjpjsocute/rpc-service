@@ -1,15 +1,17 @@
 package org.example.ray.domain;
 
+import org.example.ray.constants.RpcConstants;
+
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.example.ray.constants.RpcConstants;
 
 /**
  * @author zhoulei
  * @create 2023/5/16
- * @description:
+ * @description: netty rpc data,include rpc message type,serialization
+ *               type,compress type,request id,request data
  */
 @Data
 @NoArgsConstructor
@@ -19,19 +21,19 @@ public class RpcData {
     /**
      * rpc message type
      */
-    private byte messageType;
+    private byte   messageType;
     /**
      * serialization type
      */
-    private byte serializeMethodCodec;
+    private byte   serializeMethodCodec;
     /**
      * compress type
      */
-    private byte compressType;
+    private byte   compressType;
     /**
      * request id
      */
-    private int traceId;
+    private int    traceId;
     /**
      * request data
      */
@@ -43,7 +45,7 @@ public class RpcData {
 
     public boolean canSendRequest() {
         return messageType != RpcConstants.HEARTBEAT_REQUEST_TYPE
-                && messageType != RpcConstants.HEARTBEAT_RESPONSE_TYPE;
+            && messageType != RpcConstants.HEARTBEAT_RESPONSE_TYPE;
     }
 
     public boolean isHeartBeatResponse() {

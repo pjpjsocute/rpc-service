@@ -1,4 +1,4 @@
-package org.example.ray.infrastructure.zk.util;
+package org.example.ray.infrastructure.zk;
 
 import java.net.InetSocketAddress;
 import java.util.List;
@@ -16,16 +16,18 @@ import org.apache.curator.framework.recipes.cache.PathChildrenCacheListener;
 import org.apache.curator.retry.ExponentialBackoffRetry;
 import org.apache.zookeeper.CreateMode;
 
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 /**
- * Curator(zookeeper client) utils
- *
- * @author shuang.kou
- * @createTime 2020年05月31日 11:38:00
+ * @author zhoulei
+ * @create 2023/5/16
+ * @description: zk client
  */
 @Slf4j
-public final class CuratorUtils {
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
+public final class CuratorClient {
 
     private static final int                       BASE_SLEEP_TIME           = 1000;
     private static final int                       MAX_RETRIES               = 3;
@@ -35,11 +37,10 @@ public final class CuratorUtils {
     private static CuratorFramework                zkClient;
     private static final String                    DEFAULT_ZOOKEEPER_ADDRESS = "127.0.0.1:2181";
 
-    private CuratorUtils() {}
-
     /**
      * Create persistent nodes. Unlike temporary nodes, persistent nodes are not
-     * removed when the client disconnects
+     * removed when the client disconnects a data like
+     * :/my-rpc/org.example.testInterface/127.0.0.1:21500
      *
      * @param path node path
      */
@@ -48,7 +49,7 @@ public final class CuratorUtils {
             if (REGISTERED_PATH_SET.contains(path) || zkClient.checkExists().forPath(path) != null) {
                 log.info("The node already exists. The node is:[{}]", path);
             } else {
-                // eg: /my-rpc/github.javaguide.HelloService/127.0.0.1:9999
+                // eg:
                 zkClient.create().creatingParentsIfNeeded().withMode(CreateMode.PERSISTENT).forPath(path);
                 log.info("The node was created successfully. The node is:[{}]", path);
             }
@@ -127,8 +128,6 @@ public final class CuratorUtils {
     /**
      * Registers to listen for changes to the specified node
      *
-     * @param rpcServiceName rpc service name
-     *        eg:github.javaguide.HelloServicetest2version
      */
     private static void registerWatcher(String rpcServiceName, CuratorFramework zkClient) throws Exception {
         String servicePath = ZK_REGISTER_ROOT_PATH + "/" + rpcServiceName;

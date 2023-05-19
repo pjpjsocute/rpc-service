@@ -51,6 +51,9 @@ public class RpcRequest implements Serializable {
 
     private String group;
 
+    /**
+     * generate service name,use to distinguish different service,and * can be split to get the service name
+     */
     public String fetchRpcServiceName() {
         return this.getProject() +"*"+this.getGroup()+"*"+ this.getServiceName() +"*"+ this.getVersion();
     }

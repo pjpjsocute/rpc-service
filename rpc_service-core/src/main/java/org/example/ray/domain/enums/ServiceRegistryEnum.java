@@ -4,13 +4,17 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 
 /**
- * @Author xiaobiaoxu
- * @Date 2023年02月24日 15:30
+ * @author zhoulei
+ * @create 2023/5/16
+ * @description:  ServiceRegistry type
  */
 @AllArgsConstructor
 @Getter
 public enum ServiceRegistryEnum {
 
+    /**
+     * zookeeper
+     */
     ZK("zk");
 
     private final String name;

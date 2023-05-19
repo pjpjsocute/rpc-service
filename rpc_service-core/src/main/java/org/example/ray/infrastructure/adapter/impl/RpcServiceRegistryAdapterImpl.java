@@ -11,31 +11,34 @@ import org.example.ray.expection.RpcException;
 import org.example.ray.domain.RpcServiceConfig;
 import org.example.ray.infrastructure.adapter.RpcServiceRegistryAdapter;
 import org.example.ray.util.LogUtil;
-import org.example.ray.infrastructure.zk.util.CuratorUtils;
+import org.example.ray.infrastructure.zk.CuratorClient;
 import org.example.ray.domain.enums.RpcErrorMessageEnum;
 import org.example.ray.util.PropertiesFileUtil;
 
 /**
  * @author zhoulei
  * @create 2023/5/16
- * @description: Registration service for registration into zk todo: wait for
+ * @description: Registration service for registration into zk
  *               the implementation of the registration center
  */
 
 public class RpcServiceRegistryAdapterImpl implements RpcServiceRegistryAdapter {
 
+    /**
+     * cache map
+     */
     private final Map<String, Object> serviceMap = new ConcurrentHashMap<>();
 
     @Override
     public void registryService(RpcServiceConfig rpcServiceConfig) {
-        // first get address and service
         try {
+            // first get address and service
             String hostAddress = InetAddress.getLocalHost().getHostAddress();
             // add service to map cache
             registerServiceToMap(rpcServiceConfig);
             // add service to zk
-            LogUtil.info("add service to zk,service name{},host:{}", rpcServiceConfig.getRpcServiceName(),hostAddress);
-            registerServiceToZk(rpcServiceConfig.getRpcServiceName(),
+            LogUtil.info("add service to zk,service name{},host:{}", rpcServiceConfig.fetchRpcServiceName(),hostAddress);
+            registerServiceToZk(rpcServiceConfig.fetchRpcServiceName(),
                 new InetSocketAddress(hostAddress, PropertiesFileUtil.readPortFromProperties()));
         } catch (UnknownHostException e) {
             LogUtil.error("occur exception when getHostAddress", e);
@@ -55,13 +58,13 @@ public class RpcServiceRegistryAdapterImpl implements RpcServiceRegistryAdapter 
 
 
     private void registerServiceToZk(String rpcServiceName, InetSocketAddress inetSocketAddress) {
-        String servicePath = CuratorUtils.ZK_REGISTER_ROOT_PATH + "/" + rpcServiceName + inetSocketAddress.toString();
-        CuratorFramework zkClient = CuratorUtils.getZkClient();
-        CuratorUtils.createPersistentNode(zkClient, servicePath);
+        String servicePath = CuratorClient.ZK_REGISTER_ROOT_PATH + "/" + rpcServiceName + inetSocketAddress.toString();
+        CuratorFramework zkClient = CuratorClient.getZkClient();
+        CuratorClient.createPersistentNode(zkClient, servicePath);
     }
 
     private void registerServiceToMap(RpcServiceConfig rpcServiceConfig) {
-        String rpcServiceName = rpcServiceConfig.getRpcServiceName();
+        String rpcServiceName = rpcServiceConfig.fetchRpcServiceName();
         if (serviceMap.containsKey(rpcServiceName)) {
             return;
         }

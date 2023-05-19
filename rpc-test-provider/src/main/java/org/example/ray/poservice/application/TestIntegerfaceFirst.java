@@ -21,7 +21,7 @@ public class TestIntegerfaceFirst implements TestInterface {
     @Override
     public ResponseDto testGetDto(RequestDto requestDto) {
         ResponseDto responseDto = ResponseDto.builder()
-            .addResult(String.valueOf(requestDto.getInput1() + requestDto.getInput2()) )
+            .addResult(String.valueOf(requestDto.getInput1() + requestDto.getInput2()))
             .multipleResult(String.valueOf(requestDto.getInput1() * requestDto.getInput2()))
             .build();
         return responseDto;

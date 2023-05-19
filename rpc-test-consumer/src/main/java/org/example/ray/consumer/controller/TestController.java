@@ -19,7 +19,7 @@ public class TestController {
     private TestInterface testInterface;
 
     @GetMapping("test1")
-    public String  queryContentSnapShot(String input) {
+    public String queryContentSnapShot(String input) {
         return testInterface.testGetString(input);
     }
 

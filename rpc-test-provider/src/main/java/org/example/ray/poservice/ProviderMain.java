@@ -1,7 +1,6 @@
 package org.example.ray.poservice;
 
 import org.example.ray.annotation.SimpleRpcApplication;
-import org.example.ray.infrastructure.netty.server.NettyServer;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.ConfigurableApplicationContext;

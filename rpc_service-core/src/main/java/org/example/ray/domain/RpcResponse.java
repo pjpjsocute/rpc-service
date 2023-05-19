@@ -1,12 +1,13 @@
 package org.example.ray.domain;
 
+import java.io.Serializable;
+
+import org.example.ray.enums.RpcResponseCodeEnum;
+
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.example.ray.enums.RpcResponseCodeEnum;
-
-import java.io.Serializable;
 
 /**
  * @author zhoulei
@@ -20,21 +21,30 @@ import java.io.Serializable;
 public class RpcResponse<T> implements Serializable {
 
     private static final long serialVersionUID = 347966260947189201L;
-
-    private String requestId;
+    /**
+     * request id
+     */
+    private String            requestId;
     /**
      * response code
      */
-    private Integer code;
+    private Integer           code;
     /**
      * response message
      */
-    private String message;
+    private String            message;
     /**
      * response body
      */
-    private T data;
+    private T                 data;
 
+    /**
+     * success
+     * @param data
+     * @param requestId
+     * @return
+     * @param <T>
+     */
     public static <T> RpcResponse<T> success(T data, String requestId) {
         RpcResponse<T> response = new RpcResponse<>();
         response.setCode(RpcResponseCodeEnum.SUCCESS.getCode());
@@ -46,6 +56,11 @@ public class RpcResponse<T> implements Serializable {
         return response;
     }
 
+    /**
+     * fail
+     * @return
+     * @param <T>
+     */
     public static <T> RpcResponse<T> fail() {
         RpcResponse<T> response = new RpcResponse<>();
         response.setCode(RpcResponseCodeEnum.FAIL.getCode());

@@ -21,16 +21,13 @@ public class TestControllerSeco {
     private TestInterface testInterface;
 
     @GetMapping("test2")
-    public String  queryContentSnapShot(String input) {
+    public String queryContentSnapShot(String input) {
         return testInterface.testGetString(input);
     }
 
     @GetMapping("test3")
-    public ResponseDto  queryContentSnapShot(Integer input1,Integer input2) {
-        RequestDto build = RequestDto.builder()
-                .input1(input1)
-                .input2(input2)
-                .build();
+    public ResponseDto queryContentSnapShot(Integer input1, Integer input2) {
+        RequestDto build = RequestDto.builder().input1(input1).input2(input2).build();
         ResponseDto responseDto = testInterface.testGetDto(build);
         return responseDto;
     }

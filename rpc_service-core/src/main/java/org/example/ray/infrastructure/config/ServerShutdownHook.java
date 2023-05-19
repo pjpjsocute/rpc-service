@@ -3,7 +3,7 @@ package org.example.ray.infrastructure.config;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 import org.example.ray.infrastructure.util.ThreadPoolFactoryUtil;
-import org.example.ray.infrastructure.zk.util.CuratorUtils;
+import org.example.ray.infrastructure.zk.CuratorClient;
 import org.example.ray.util.PropertiesFileUtil;
 
 
@@ -13,7 +13,7 @@ import java.net.InetSocketAddress;
 /**
  * @author zhoulei
  * @create 2023/5/17
- * @description:
+ * @description: server shut down
  */
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class ServerShutdownHook {
@@ -24,6 +24,9 @@ public class ServerShutdownHook {
         return INSTANCE;
     }
 
+    /**
+     * register shut down hook
+     */
     public void registerShutdownHook() {
         Runtime.getRuntime().addShutdownHook(new Thread(() -> {
             // 执行清理操作
@@ -35,7 +38,7 @@ public class ServerShutdownHook {
         try {
             // 清理注册表
             InetSocketAddress inetSocketAddress = new InetSocketAddress(InetAddress.getLocalHost().getHostAddress(), PropertiesFileUtil.readPortFromProperties());
-            CuratorUtils.clearRegistry(CuratorUtils.getZkClient(), inetSocketAddress);
+            CuratorClient.clearRegistry(CuratorClient.getZkClient(), inetSocketAddress);
         } catch (Exception ignored) {
 
         }

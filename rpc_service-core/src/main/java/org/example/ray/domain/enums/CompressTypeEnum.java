@@ -5,14 +5,20 @@ import lombok.Getter;
 /**
  * @author zhoulei
  * @create 2023/5/16
- * @description:
+ * @description: compress type
  */
 public enum CompressTypeEnum {
-
-    GZIP((byte) 0x01, "gzip");
+    /**
+     * gzip
+     */
+    GZIP((byte)0x01, "gzip"),
+    /**
+     * zip
+     */
+    ZIP((byte)0x02, "zip");
 
     @Getter
-    private final byte code;
+    private final byte   code;
     @Getter
     private final String name;
 
@@ -25,15 +31,6 @@ public enum CompressTypeEnum {
         for (CompressTypeEnum c : CompressTypeEnum.values()) {
             if (c.getCode() == code) {
                 return c.name;
-            }
-        }
-        return null;
-    }
-
-    public static CompressTypeEnum getEnum(byte code) {
-        for (CompressTypeEnum c : CompressTypeEnum.values()) {
-            if (c.getCode() == code) {
-                return c;
             }
         }
         return null;

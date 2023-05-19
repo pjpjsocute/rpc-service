@@ -4,14 +4,26 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 
 /**
- * @Author xiaobiaoxu
- * @Date 2023年02月24日 15:30
+ * @author zhoulei
+ * @create 2023/5/16
+ * @description: request sending type
  */
 @AllArgsConstructor
 @Getter
 public enum RpcRequestSendingEnum {
+    /**
+     * http
+     */
+    HTTP("http"),
 
+    /**
+     * netty
+     */
     NETTY("netty"),
+
+    /**
+     * socket
+     */
     SOCKET("socket");
 
     private final String name;
