@@ -1,6 +1,7 @@
 package org.example.ray.infrastructure.adapter;
 
-import org.example.ray.provider.domain.RpcRequest;
+import org.example.ray.domain.RpcRequest;
+import org.example.ray.infrastructure.spi.SPI;
 
 import java.net.InetSocketAddress;
 
@@ -9,6 +10,7 @@ import java.net.InetSocketAddress;
  * @create 2023/5/16
  * @description:
  */
+@SPI
 public interface RpcServiceFindingAdapter {
     /**
      * lookup service by rpcServiceName

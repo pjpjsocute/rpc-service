@@ -11,11 +11,9 @@ import java.util.Map;
 import java.util.TreeMap;
 import java.util.concurrent.ConcurrentHashMap;
 
-import org.example.ray.provider.domain.RpcRequest;
+import org.example.ray.domain.RpcRequest;
 import org.example.ray.infrastructure.loadbalance.LoadBalanceService;
-import org.example.ray.enums.LoadBalanceType;
 import org.example.ray.infrastructure.util.LogUtil;
-import org.springframework.stereotype.Component;
 
 /**
  * @author zhoulei
@@ -29,7 +27,7 @@ import org.springframework.stereotype.Component;
  *               changes, it only affects a small number of locations on the
  *               hash ring, thus achieving load balancing.
  */
-@Component
+
 public class ConsistentHashLoadBalanceService implements LoadBalanceService {
 
     private final Map<String, ConsistentHashLoadBalanceSelector> serviceToSelectorMap = new ConcurrentHashMap<>();
@@ -66,7 +64,7 @@ public class ConsistentHashLoadBalanceService implements LoadBalanceService {
 
         public String select(String rpcServiceKey) {
             byte[] digest = md5Hash(rpcServiceKey);
-            //use first 8 byte to get hash
+            // use first 8 byte to get hash
             return selectForKey(calculateHash(digest, 0));
         }
 
@@ -108,11 +106,6 @@ public class ConsistentHashLoadBalanceService implements LoadBalanceService {
             hash |= (255L & (long)digest[i + idx * 8]) << (8 * i);
         }
         return hash;
-    }
-
-    @Override
-    public LoadBalanceType fetchLoadBalanceType() {
-        return LoadBalanceType.HASH;
     }
 
     /**

@@ -1,8 +1,6 @@
 package org.example.ray.infrastructure.netty.client;
 
-import io.netty.channel.ChannelHandler;
-import org.example.ray.provider.domain.RpcResponse;
-import org.springframework.stereotype.Component;
+import org.example.ray.domain.RpcResponse;
 
 import java.util.Map;
 import java.util.concurrent.CompletableFuture;

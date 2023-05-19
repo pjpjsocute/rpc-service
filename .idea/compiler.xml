@@ -16,7 +16,6 @@
     </annotationProcessing>
     <bytecodeTargetLevel>
       <module name="registration" target="1.8" />
-      <module name="rpc-service" target="1.8" />
       <module name="rpc_service-api" target="1.8" />
       <module name="rpc_service-example-consumer" target="1.8" />
       <module name="rpc_service-example-provider" target="1.8" />

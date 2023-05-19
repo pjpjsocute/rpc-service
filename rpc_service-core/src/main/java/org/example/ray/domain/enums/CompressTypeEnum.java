@@ -1,4 +1,4 @@
-package org.example.ray.provider.domain.enums;
+package org.example.ray.domain.enums;
 
 import lombok.Getter;
 
@@ -25,6 +25,15 @@ public enum CompressTypeEnum {
         for (CompressTypeEnum c : CompressTypeEnum.values()) {
             if (c.getCode() == code) {
                 return c.name;
+            }
+        }
+        return null;
+    }
+
+    public static CompressTypeEnum getEnum(byte code) {
+        for (CompressTypeEnum c : CompressTypeEnum.values()) {
+            if (c.getCode() == code) {
+                return c;
             }
         }
         return null;

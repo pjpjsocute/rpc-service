@@ -3,11 +3,12 @@ package org.example.ray.infrastructure.netty;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
-import io.netty.channel.ChannelHandler;
-import org.example.ray.provider.domain.RpcRequest;
-import org.example.ray.provider.domain.enums.RpcErrorMessageEnum;
+import org.example.ray.domain.RpcRequest;
+import org.example.ray.domain.enums.RpcErrorMessageEnum;
+import org.example.ray.domain.enums.ServiceRegistryEnum;
 import org.example.ray.expection.RpcException;
 import org.example.ray.infrastructure.adapter.RpcServiceRegistryAdapter;
+import org.example.ray.infrastructure.spi.ExtensionLoader;
 import org.example.ray.infrastructure.util.LogUtil;
 import org.springframework.stereotype.Component;
 
@@ -18,14 +19,12 @@ import org.springframework.stereotype.Component;
  * @createTime 2020年05月13日 09:05:00
  */
 
-@Component
-
 public class RpcRequestHandler {
 
     private final RpcServiceRegistryAdapter adapter;
 
-    public RpcRequestHandler(RpcServiceRegistryAdapter adapter) {
-        this.adapter = adapter;
+    public RpcRequestHandler() {
+        this.adapter = ExtensionLoader.getExtensionLoader(RpcServiceRegistryAdapter.class).getExtension(ServiceRegistryEnum.ZK.getName());
     }
 
     /**

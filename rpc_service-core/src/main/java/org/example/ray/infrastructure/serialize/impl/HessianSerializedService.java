@@ -2,7 +2,7 @@ package org.example.ray.infrastructure.serialize.impl;
 
 import com.caucho.hessian.io.HessianInput;
 import com.caucho.hessian.io.HessianOutput;
-import org.example.ray.provider.domain.enums.SerializationTypeEnum;
+import org.example.ray.domain.enums.SerializationTypeEnum;
 import org.example.ray.expection.RpcException;
 import org.example.ray.infrastructure.serialize.SerializationService;
 import org.springframework.stereotype.Component;
@@ -10,20 +10,15 @@ import org.springframework.stereotype.Component;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 
-import static org.example.ray.provider.domain.enums.RpcErrorMessageEnum.SERIALIZATION_FAILURE;
+import static org.example.ray.domain.enums.RpcErrorMessageEnum.SERIALIZATION_FAILURE;
 
 /**
  * @author zhoulei
  * @create 2023/5/17
  * @description:
  */
-@Component
-public class HessianSerializedService implements SerializationService {
-    @Override
-    public Byte getSerializationMethod() {
-        return SerializationTypeEnum.HESSIAN.getCode();
-    }
 
+public class HessianSerializedService implements SerializationService {
     @Override
     public byte[] serialize(Object obj) {
         try (ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream()) {

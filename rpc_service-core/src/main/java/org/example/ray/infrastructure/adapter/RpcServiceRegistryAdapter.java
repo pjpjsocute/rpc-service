@@ -1,8 +1,7 @@
 package org.example.ray.infrastructure.adapter;
 
-import org.example.ray.provider.domain.RpcServiceConfig;
-
-import java.util.List;
+import org.example.ray.domain.RpcServiceConfig;
+import org.example.ray.infrastructure.spi.SPI;
 
 /**
  * @author zhoulei
@@ -10,6 +9,7 @@ import java.util.List;
  * @description: Registration service for registration into zk
  * todo: wait for the implementation of the registration center
  */
+@SPI
 public interface RpcServiceRegistryAdapter {
 
     /**

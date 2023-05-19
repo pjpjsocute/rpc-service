@@ -2,13 +2,13 @@ package org.example.ray.infrastructure.netty;
 
 import javax.annotation.Resource;
 
-import io.netty.channel.ChannelHandler;
 import org.example.ray.constants.RpcConstants;
-import org.example.ray.provider.domain.RpcData;
-import org.example.ray.provider.domain.RpcRequest;
-import org.example.ray.provider.domain.RpcResponse;
-import org.example.ray.provider.domain.enums.CompressTypeEnum;
-import org.example.ray.provider.domain.enums.SerializationTypeEnum;
+import org.example.ray.domain.RpcData;
+import org.example.ray.domain.RpcRequest;
+import org.example.ray.domain.RpcResponse;
+import org.example.ray.domain.enums.CompressTypeEnum;
+import org.example.ray.domain.enums.SerializationTypeEnum;
+import org.example.ray.infrastructure.factory.SingletonFactory;
 import org.example.ray.infrastructure.util.LogUtil;
 import org.springframework.stereotype.Component;
 
@@ -22,14 +22,17 @@ import io.netty.handler.timeout.IdleStateEvent;
  * @description:
  */
 
-@Component
+
 public class NettyRpcServerHandler extends SimpleChannelInboundHandler<RpcData> {
     /**
      * Read the message transmitted by the server
      */
-    @Resource
-    private RpcRequestHandler rpcRequestHandler;
 
+    private final RpcRequestHandler rpcRequestHandler;
+
+    public NettyRpcServerHandler() {
+        this.rpcRequestHandler = SingletonFactory.getInstance(RpcRequestHandler.class);
+    }
     /**
      * heart beat handle
      * 

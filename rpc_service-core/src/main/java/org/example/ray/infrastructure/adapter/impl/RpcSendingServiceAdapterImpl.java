@@ -6,11 +6,11 @@ import java.util.concurrent.TimeUnit;
 
 import org.example.ray.constants.RpcConstants;
 import org.example.ray.infrastructure.factory.SingletonFactory;
-import org.example.ray.provider.domain.RpcData;
-import org.example.ray.provider.domain.RpcRequest;
-import org.example.ray.provider.domain.RpcResponse;
-import org.example.ray.provider.domain.enums.CompressTypeEnum;
-import org.example.ray.provider.domain.enums.SerializationTypeEnum;
+import org.example.ray.domain.RpcData;
+import org.example.ray.domain.RpcRequest;
+import org.example.ray.domain.RpcResponse;
+import org.example.ray.domain.enums.CompressTypeEnum;
+import org.example.ray.domain.enums.SerializationTypeEnum;
 import org.example.ray.infrastructure.adapter.RpcSendingServiceAdapter;
 import org.example.ray.infrastructure.adapter.RpcServiceFindingAdapter;
 import org.example.ray.infrastructure.netty.NettyRpcClientHandler;
@@ -19,7 +19,6 @@ import org.example.ray.infrastructure.netty.RpcMessageEncoder;
 import org.example.ray.infrastructure.netty.client.AddressChannelManager;
 import org.example.ray.infrastructure.netty.client.WaitingProcess;
 import org.example.ray.infrastructure.util.LogUtil;
-import org.springframework.stereotype.Component;
 
 import io.netty.bootstrap.Bootstrap;
 import io.netty.channel.Channel;
@@ -41,7 +40,7 @@ import io.netty.handler.timeout.IdleStateHandler;
  * @description:
  */
 
-@Component
+
 public class RpcSendingServiceAdapterImpl implements RpcSendingServiceAdapter {
 
     /**
@@ -59,15 +58,9 @@ public class RpcSendingServiceAdapterImpl implements RpcSendingServiceAdapter {
     private final AddressChannelManager    addressChannelManager;
 
 
-    private final RpcMessageEncoder        encoder;
-
-    private final RpcMessageDecoder        decoder;
-
-    public RpcSendingServiceAdapterImpl(RpcServiceFindingAdapter findingAdapter, RpcMessageEncoder rpcEncoder, RpcMessageDecoder rpcDecoder) {
-        this.findingAdapter = findingAdapter;
+    public RpcSendingServiceAdapterImpl() {
+        this.findingAdapter = SingletonFactory.getInstance(RpcServiceFindingAdapter.class);
         this.addressChannelManager = SingletonFactory.getInstance(AddressChannelManager.class);
-        this.encoder = rpcEncoder;
-        this.decoder = rpcDecoder;
         // initialize
         eventLoopGroup = new NioEventLoopGroup();
         bootstrap = new Bootstrap();
@@ -85,8 +78,8 @@ public class RpcSendingServiceAdapterImpl implements RpcSendingServiceAdapter {
                     // If no data is sent to the server within 15 seconds, a
                     // heartbeat request is sent
                     p.addLast(new IdleStateHandler(0, 5, 0, TimeUnit.SECONDS));
-                    p.addLast(encoder);
-                    p.addLast(decoder);
+                    p.addLast(new RpcMessageEncoder());
+                    p.addLast(new RpcMessageDecoder());
                     p.addLast(new NettyRpcClientHandler());
                 }
             });

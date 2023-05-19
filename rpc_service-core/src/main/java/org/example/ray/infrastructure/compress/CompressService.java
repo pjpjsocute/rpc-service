@@ -1,13 +1,14 @@
 package org.example.ray.infrastructure.compress;
 
+import org.example.ray.infrastructure.spi.SPI;
+
 /**
  * @author zhoulei
  * @create 2023/5/17
  * @description:
  */
+@SPI
 public interface CompressService{
-
-    byte getCompressMethod();
 
     /**
      * @param bytes

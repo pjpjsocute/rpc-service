@@ -1,4 +1,4 @@
-package org.example.ray.provider.domain.enums;
+package org.example.ray.domain.enums;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

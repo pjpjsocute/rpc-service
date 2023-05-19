@@ -1,6 +1,6 @@
 package org.example.ray.infrastructure.compress.impl;
 
-import org.example.ray.provider.domain.enums.CompressTypeEnum;
+import org.example.ray.domain.enums.CompressTypeEnum;
 import org.example.ray.infrastructure.compress.CompressService;
 import org.springframework.stereotype.Component;
 
@@ -15,15 +15,9 @@ import java.util.zip.GZIPOutputStream;
  * @create 2023/5/17
  * @description:
  */
-@Component
 public class GzipCompressService implements CompressService {
 
     private static final int BUFFER_SIZE = 1024 * 4;
-
-    @Override
-    public byte getCompressMethod() {
-        return CompressTypeEnum.GZIP.getCode();
-    }
 
     @Override
     public byte[] compress(byte[] bytes) {

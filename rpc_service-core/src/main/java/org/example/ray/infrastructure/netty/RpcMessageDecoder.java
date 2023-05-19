@@ -1,13 +1,15 @@
 package org.example.ray.infrastructure.netty;
 
 import org.example.ray.constants.RpcConstants;
-import org.example.ray.infrastructure.compress.CompressStrategy;
-import org.example.ray.infrastructure.factory.SingletonFactory;
-import org.example.ray.infrastructure.serialize.SerializationStrategy;
+import org.example.ray.domain.RpcData;
+import org.example.ray.domain.RpcRequest;
+import org.example.ray.domain.RpcResponse;
+import org.example.ray.domain.enums.CompressTypeEnum;
+import org.example.ray.domain.enums.SerializationTypeEnum;
+import org.example.ray.infrastructure.compress.CompressService;
+import org.example.ray.infrastructure.serialize.SerializationService;
+import org.example.ray.infrastructure.spi.ExtensionLoader;
 import org.example.ray.infrastructure.util.LogUtil;
-import org.example.ray.provider.domain.RpcData;
-import org.example.ray.provider.domain.RpcRequest;
-import org.example.ray.provider.domain.RpcResponse;
 
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;
@@ -18,17 +20,18 @@ import io.netty.handler.codec.LengthFieldBasedFrameDecoder;
  * @create 2023/5/16
  * @description:
  *
- *               0 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16
- *               +-----+-----+-----+-----+--------+----+----+----+------+-----------+-------+-----
- *               --+-----+-----+-------+ | magic code |version | full length |
- *               messageType| codec|compress| RequestId |
- *               +-----------------------+--------+---------------------+-----------+-----------+-----------+------------+
- *               | | | body | | | | ... ... |
- *               +-------------------------------------------------------------------------------------------------------+
+ *   0     1     2     3     4        5     6     7     8         9          10      11     12  13  14   15 16
+ *   +-----+-----+-----+-----+--------+----+----+----+------+-----------+-------+----- --+-----+-----+-------+
+ *   |   magic   code        |version | full length         | messageType| codec|compress|    RequestId       |
+ *   +-----------------------+--------+---------------------+-----------+-----------+-----------+------------+
+ *   |                                                                                                       |
+ *   |                                         body                                                          |
+ *   |                                                                                                       |
+ *   |                                        ... ...                                                        |
+ *   +-------------------------------------------------------------------------------------------------------+
  */
 
 public class RpcMessageDecoder extends LengthFieldBasedFrameDecoder {
-
 
     public RpcMessageDecoder() {
         // lengthFieldOffset: magic code is 4B, and version is 1B, and then full
@@ -114,15 +117,20 @@ public class RpcMessageDecoder extends LengthFieldBasedFrameDecoder {
         byte[] bodyBytes = new byte[bodyLength];
         byteBuf.readBytes(bodyBytes);
         // decompose
-        bodyBytes = SingletonFactory.getInstance(CompressStrategy.class).decompress(bodyBytes, rpcMessage.getCompressType());
+        String compressName = CompressTypeEnum.getName(rpcMessage.getCompressType());
+        CompressService extension =
+            ExtensionLoader.getExtensionLoader(CompressService.class).getExtension(compressName);
+        bodyBytes = extension.decompress(bodyBytes);
         // deserialize
         if (rpcMessage.getMessageType() == RpcConstants.REQUEST_TYPE) {
-            RpcRequest rpcRequest =
-                SingletonFactory.getInstance(SerializationStrategy.class).deserialize(bodyBytes, RpcRequest.class, rpcMessage.getSerializeMethodCodec());
+            RpcRequest rpcRequest = ExtensionLoader.getExtensionLoader(SerializationService.class)
+                .getExtension(SerializationTypeEnum.getName(rpcMessage.getSerializeMethodCodec()))
+                .deserialize(bodyBytes, RpcRequest.class);
             rpcMessage.setData(rpcRequest);
         } else {
-            RpcResponse rpcResponse =
-                    SingletonFactory.getInstance(SerializationStrategy.class).deserialize(bodyBytes, RpcResponse.class, rpcMessage.getSerializeMethodCodec());
+            RpcResponse rpcResponse = ExtensionLoader.getExtensionLoader(SerializationService.class)
+                .getExtension(SerializationTypeEnum.getName(rpcMessage.getSerializeMethodCodec()))
+                .deserialize(bodyBytes, RpcResponse.class);
             rpcMessage.setData(rpcResponse);
         }
         return rpcMessage;

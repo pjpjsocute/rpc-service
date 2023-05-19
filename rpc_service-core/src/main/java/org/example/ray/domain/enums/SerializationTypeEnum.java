@@ -1,4 +1,4 @@
-package org.example.ray.provider.domain.enums;
+package org.example.ray.domain.enums;
 
 import lombok.Getter;
 
@@ -28,6 +28,15 @@ public enum SerializationTypeEnum {
         for (SerializationTypeEnum c : SerializationTypeEnum.values()) {
             if (c.getCode() == code) {
                 return c.name;
+            }
+        }
+        return null;
+    }
+
+    public static SerializationTypeEnum getEnum(byte code) {
+        for (SerializationTypeEnum c : SerializationTypeEnum.values()) {
+            if (c.getCode() == code) {
+                return c;
             }
         }
         return null;

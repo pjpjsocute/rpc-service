@@ -4,12 +4,14 @@ import java.lang.reflect.Field;
 
 import org.example.ray.annotation.RpcConsumer;
 import org.example.ray.annotation.RpcProvider;
+import org.example.ray.domain.enums.RpcRequestSendingEnum;
 import org.example.ray.infrastructure.adapter.RpcSendingServiceAdapter;
 import org.example.ray.infrastructure.adapter.RpcServiceRegistryAdapter;
 import org.example.ray.infrastructure.adapter.impl.RpcServiceRegistryAdapterImpl;
 import org.example.ray.infrastructure.factory.SingletonFactory;
 import org.example.ray.infrastructure.proxy.RpcServiceProxy;
-import org.example.ray.provider.domain.RpcServiceConfig;
+import org.example.ray.domain.RpcServiceConfig;
+import org.example.ray.infrastructure.spi.ExtensionLoader;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.config.BeanPostProcessor;
 import org.springframework.stereotype.Component;
@@ -27,9 +29,9 @@ public class RpcBeanPostProcessor implements BeanPostProcessor {
 
     private final RpcSendingServiceAdapter  sendingServiceAdapter;
 
-    public RpcBeanPostProcessor(RpcServiceRegistryAdapter adapter, RpcSendingServiceAdapter sendingServiceAdapter) {
+    public RpcBeanPostProcessor() {
         this.adapter = SingletonFactory.getInstance(RpcServiceRegistryAdapterImpl.class);;
-        this.sendingServiceAdapter = sendingServiceAdapter;
+        this.sendingServiceAdapter = ExtensionLoader.getExtensionLoader(RpcSendingServiceAdapter.class).getExtension(RpcRequestSendingEnum.NETTY.getName());
     }
 
     /**

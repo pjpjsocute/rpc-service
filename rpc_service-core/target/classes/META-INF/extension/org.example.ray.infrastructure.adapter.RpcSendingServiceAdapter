@@ -1,0 +1,1 @@
+netty=org.example.ray.infrastructure.adapter.impl.RpcSendingServiceAdapterImpl

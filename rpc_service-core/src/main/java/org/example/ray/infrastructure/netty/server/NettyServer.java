@@ -5,6 +5,7 @@ import java.util.concurrent.TimeUnit;
 
 import org.example.ray.infrastructure.config.PropertiesReader;
 import org.example.ray.infrastructure.config.ServerShutdownHook;
+import org.example.ray.infrastructure.factory.SingletonFactory;
 import org.example.ray.infrastructure.netty.NettyRpcServerHandler;
 import org.example.ray.infrastructure.netty.RpcMessageDecoder;
 import org.example.ray.infrastructure.netty.RpcMessageEncoder;
@@ -26,8 +27,6 @@ import io.netty.handler.logging.LoggingHandler;
 import io.netty.handler.timeout.IdleStateHandler;
 import io.netty.util.concurrent.DefaultEventExecutorGroup;
 
-import javax.annotation.Resource;
-
 /**
  * @author zhoulei
  * @create 2023/5/17
@@ -35,8 +34,12 @@ import javax.annotation.Resource;
  */
 @Component
 public class NettyServer {
-    @Resource
-    private NettyRpcServerHandler nettyRpcServerHandler;
+
+    private final NettyRpcServerHandler nettyRpcServerHandler;
+
+    public NettyServer() {
+        this.nettyRpcServerHandler = SingletonFactory.getInstance(NettyRpcServerHandler.class);
+    }
 
     public void start() {
         // first clear the registry

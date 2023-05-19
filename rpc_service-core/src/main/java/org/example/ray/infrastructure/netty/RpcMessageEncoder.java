@@ -1,20 +1,21 @@
 package org.example.ray.infrastructure.netty;
 
-import javax.annotation.Resource;
-
-import io.netty.channel.ChannelHandler;
 import org.example.ray.constants.RpcConstants;
-import org.example.ray.provider.domain.RpcData;
-import org.example.ray.provider.domain.enums.RpcErrorMessageEnum;
+import org.example.ray.domain.RpcData;
+import org.example.ray.domain.enums.CompressTypeEnum;
+import org.example.ray.domain.enums.RpcErrorMessageEnum;
+import org.example.ray.domain.enums.SerializationTypeEnum;
 import org.example.ray.expection.RpcException;
-import org.example.ray.infrastructure.compress.CompressStrategy;
-import org.example.ray.infrastructure.serialize.SerializationStrategy;
+import org.example.ray.infrastructure.compress.CompressService;
+import org.example.ray.infrastructure.serialize.SerializationService;
+import org.example.ray.infrastructure.spi.ExtensionLoader;
 import org.example.ray.infrastructure.util.LogUtil;
-import org.springframework.stereotype.Component;
 
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.MessageToByteEncoder;
+
+import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  * @author zhoulei
@@ -31,15 +32,10 @@ import io.netty.handler.codec.MessageToByteEncoder;
  *               messageType（消息类型） 1B compress（压缩类型） 1B codec（序列化类型） 4B
  *               requestId（请求的Id）
  */
-@Component
-@org.jboss.netty.channel.ChannelHandler.Sharable
+
 public class RpcMessageEncoder extends MessageToByteEncoder<RpcData> {
 
-    @Resource
-    private SerializationStrategy serializationStrategy;
-
-    @Resource
-    private CompressStrategy      compressStrategy;
+    private static final AtomicInteger ATOMIC_INTEGER = new AtomicInteger(0);
 
     @Override
     protected void encode(ChannelHandlerContext channelHandlerContext, RpcData rpcData, ByteBuf byteBuf) {
@@ -61,16 +57,22 @@ public class RpcMessageEncoder extends MessageToByteEncoder<RpcData> {
             // write compress
             byteBuf.writeByte(rpcData.getCompressType());
             // write requestId
-            byteBuf.writeInt(rpcData.getTraceId());
+            byteBuf.writeInt(ATOMIC_INTEGER.getAndIncrement());
 
             byte[] bodyBytes = null;
             int fullLength = RpcConstants.HEAD_LENGTH;
             // can send request
             if (rpcData.canSendRequest()) {
                 LogUtil.info("serialize request start");
-                bodyBytes = serializationStrategy.serialize(rpcData.getData(), rpcData.getSerializeMethodCodec());
+                bodyBytes = ExtensionLoader.getExtensionLoader(SerializationService.class)
+                    .getExtension(SerializationTypeEnum.getName(rpcData.getSerializeMethodCodec()))
+                    .serialize(rpcData.getData());
                 LogUtil.info("serialize request end");
-                compressStrategy.compress(bodyBytes, rpcData.getCompressType());
+
+                String compressName = CompressTypeEnum.getName(rpcData.getCompressType());
+                CompressService extension =
+                    ExtensionLoader.getExtensionLoader(CompressService.class).getExtension(compressName);
+                bodyBytes = extension.compress(bodyBytes);
                 fullLength += bodyBytes.length;
             }
 
@@ -82,7 +84,7 @@ public class RpcMessageEncoder extends MessageToByteEncoder<RpcData> {
             byteBuf.writeInt(fullLength);
             byteBuf.writerIndex(writeIndex);
         } catch (Exception e) {
-            LogUtil.error("Encode request error:{},data:{}", e,rpcData);
+            LogUtil.error("Encode request error:{},data:{}", e, rpcData);
             throw new RpcException(RpcErrorMessageEnum.REQUEST_ENCODE_FAIL.getCode(),
                 RpcErrorMessageEnum.REQUEST_ENCODE_FAIL.getMessage());
         }

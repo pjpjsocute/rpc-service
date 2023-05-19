@@ -1,10 +1,14 @@
 package org.example.ray.enums;
 
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+
 /**
  * @author zhoulei
  * @create 2023/5/18
  * @description:
  */
+@Getter
 public enum LoadBalanceType {
 
     /**
