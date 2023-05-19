@@ -1,18 +1,15 @@
-package org.example.ray.infrastructure.netty;
+package org.example.ray.infrastructure.netty.server;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
 import org.example.ray.domain.RpcRequest;
 import org.example.ray.domain.enums.RpcErrorMessageEnum;
-import org.example.ray.domain.enums.ServiceRegistryEnum;
 import org.example.ray.expection.RpcException;
 import org.example.ray.infrastructure.adapter.RpcServiceRegistryAdapter;
 import org.example.ray.infrastructure.adapter.impl.RpcServiceRegistryAdapterImpl;
 import org.example.ray.infrastructure.factory.SingletonFactory;
-import org.example.ray.infrastructure.spi.ExtensionLoader;
-import org.example.ray.infrastructure.util.LogUtil;
-import org.springframework.stereotype.Component;
+import org.example.ray.util.LogUtil;
 
 /**
  * RpcRequest processor
@@ -34,7 +31,7 @@ public class RpcRequestHandler {
      * method
      */
     public Object handle(RpcRequest request) {
-        Object service = adapter.getService(request.getServiceName());
+        Object service = adapter.getService(request.fetchRpcServiceName());
         return invoke(request, service);
     }
 

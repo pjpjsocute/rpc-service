@@ -17,4 +17,9 @@ public class RpcBeanScanner extends ClassPathBeanDefinitionScanner {
         super.addIncludeFilter(new AnnotationTypeFilter(annoType));
     }
 
+    @Override
+    public int scan(String... basePackages) {
+        return super.scan(basePackages);
+    }
+
 }

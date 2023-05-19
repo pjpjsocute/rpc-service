@@ -13,7 +13,7 @@ import java.util.concurrent.ConcurrentHashMap;
 
 import org.example.ray.domain.RpcRequest;
 import org.example.ray.infrastructure.loadbalance.LoadBalanceService;
-import org.example.ray.infrastructure.util.LogUtil;
+import org.example.ray.util.LogUtil;
 
 /**
  * @author zhoulei

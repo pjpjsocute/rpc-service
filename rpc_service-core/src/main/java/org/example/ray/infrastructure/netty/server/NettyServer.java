@@ -3,16 +3,12 @@ package org.example.ray.infrastructure.netty.server;
 import java.net.InetAddress;
 import java.util.concurrent.TimeUnit;
 
-import org.example.ray.infrastructure.config.PropertiesReader;
 import org.example.ray.infrastructure.config.ServerShutdownHook;
-import org.example.ray.infrastructure.factory.SingletonFactory;
-import org.example.ray.infrastructure.netty.NettyRpcServerHandler;
-import org.example.ray.infrastructure.netty.RpcMessageDecoder;
-import org.example.ray.infrastructure.netty.RpcMessageEncoder;
-import org.example.ray.infrastructure.util.LogUtil;
+import org.example.ray.infrastructure.coder.RpcMessageDecoder;
+import org.example.ray.infrastructure.coder.RpcMessageEncoder;
+import org.example.ray.util.LogUtil;
 import org.example.ray.infrastructure.util.ThreadPoolFactoryUtil;
 import org.example.ray.util.PropertiesFileUtil;
-import org.springframework.stereotype.Component;
 
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.channel.ChannelFuture;
@@ -27,8 +23,7 @@ import io.netty.handler.logging.LogLevel;
 import io.netty.handler.logging.LoggingHandler;
 import io.netty.handler.timeout.IdleStateHandler;
 import io.netty.util.concurrent.DefaultEventExecutorGroup;
-
-import javax.annotation.PostConstruct;
+import org.springframework.stereotype.Component;
 
 /**
  * @author zhoulei
@@ -44,14 +39,14 @@ public class NettyServer {
 
     public void start() {
         LogUtil.info("netty server init");
-        NettyRpcServerHandler  nettyRpcServerHandler= SingletonFactory.getInstance(NettyRpcServerHandler.class);
+
         // first clear the registry
         ServerShutdownHook.getInstance().registerShutdownHook();
 
         //init listenerGroup,listen to request and relate to workerGroup
        EventLoopGroup listenerGroup = new NioEventLoopGroup(1);
         //init workerGroup,handle the request:I/0
-        EventLoopGroup workerGroup = new NioEventLoopGroup(4);
+        EventLoopGroup workerGroup = new NioEventLoopGroup();
         //group used to for handel the request and response
         DefaultEventExecutorGroup businessGroup = new DefaultEventExecutorGroup(
                 Runtime.getRuntime().availableProcessors() * 2,
@@ -76,7 +71,7 @@ public class NettyServer {
                                     pipeline.addLast(new IdleStateHandler(30, 0, 0, TimeUnit.SECONDS));
                                     pipeline.addLast(new RpcMessageEncoder());
                                     pipeline.addLast(new RpcMessageDecoder());
-                                    pipeline.addLast(businessGroup, nettyRpcServerHandler);
+                                    pipeline.addLast(businessGroup, new NettyRpcServerHandler());
                                 }
                             });
             LogUtil.info("netty server start successfully");

@@ -5,22 +5,22 @@ import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.TimeUnit;
 
 import org.example.ray.constants.RpcConstants;
-import org.example.ray.domain.enums.ServiceDiscoveryEnum;
-import org.example.ray.infrastructure.factory.SingletonFactory;
 import org.example.ray.domain.RpcData;
 import org.example.ray.domain.RpcRequest;
 import org.example.ray.domain.RpcResponse;
 import org.example.ray.domain.enums.CompressTypeEnum;
 import org.example.ray.domain.enums.SerializationTypeEnum;
+import org.example.ray.domain.enums.ServiceDiscoveryEnum;
 import org.example.ray.infrastructure.adapter.RpcSendingServiceAdapter;
 import org.example.ray.infrastructure.adapter.RpcServiceFindingAdapter;
-import org.example.ray.infrastructure.netty.NettyRpcClientHandler;
-import org.example.ray.infrastructure.netty.RpcMessageDecoder;
-import org.example.ray.infrastructure.netty.RpcMessageEncoder;
+import org.example.ray.infrastructure.factory.SingletonFactory;
+import org.example.ray.infrastructure.netty.client.NettyRpcClientHandler;
+import org.example.ray.infrastructure.coder.RpcMessageDecoder;
+import org.example.ray.infrastructure.coder.RpcMessageEncoder;
 import org.example.ray.infrastructure.netty.client.AddressChannelManager;
-import org.example.ray.infrastructure.netty.client.WaitingProcess;
+import org.example.ray.infrastructure.netty.client.WaitingProcessRequestQueue;
 import org.example.ray.infrastructure.spi.ExtensionLoader;
-import org.example.ray.infrastructure.util.LogUtil;
+import org.example.ray.util.LogUtil;
 
 import io.netty.bootstrap.Bootstrap;
 import io.netty.channel.Channel;
@@ -42,27 +42,29 @@ import io.netty.handler.timeout.IdleStateHandler;
  * @description:
  */
 
-
 public class RpcSendingServiceAdapterImpl implements RpcSendingServiceAdapter {
 
     /**
      * EventLoopGroup is a multithreaded event loop that handles I/O operation.
      */
-    private final EventLoopGroup           eventLoopGroup;
+    private final EventLoopGroup             eventLoopGroup;
 
     /**
      * Bootstrap helt setting and start netty client
      */
-    private final Bootstrap                bootstrap;
+    private final Bootstrap                  bootstrap;
 
-    private final RpcServiceFindingAdapter findingAdapter;
+    private final RpcServiceFindingAdapter   findingAdapter;
 
-    private final AddressChannelManager    addressChannelManager;
+    private final AddressChannelManager      addressChannelManager;
 
+    private final WaitingProcessRequestQueue waitingProcessRequestQueue;
 
     public RpcSendingServiceAdapterImpl() {
-        this.findingAdapter = ExtensionLoader.getExtensionLoader(RpcServiceFindingAdapter.class).getExtension(ServiceDiscoveryEnum.ZK.getName());
+        this.findingAdapter = ExtensionLoader.getExtensionLoader(RpcServiceFindingAdapter.class)
+            .getExtension(ServiceDiscoveryEnum.ZK.getName());
         this.addressChannelManager = SingletonFactory.getInstance(AddressChannelManager.class);
+        this.waitingProcessRequestQueue = SingletonFactory.getInstance(WaitingProcessRequestQueue.class);
         // initialize
         eventLoopGroup = new NioEventLoopGroup();
         bootstrap = new Bootstrap();
@@ -98,7 +100,7 @@ public class RpcSendingServiceAdapterImpl implements RpcSendingServiceAdapter {
         Channel channel = fetchAndConnectChannel(address);
         if (channel.isActive()) {
             // add to a waitList
-            SingletonFactory.getInstance(WaitingProcess.class).put(rpcRequest.getTraceId(), result);
+            waitingProcessRequestQueue.put(rpcRequest.getTraceId(), result);
 
             // can choose compress method,code method
             RpcData rpcData = RpcData.builder()
@@ -141,7 +143,7 @@ public class RpcSendingServiceAdapterImpl implements RpcSendingServiceAdapter {
                 LogUtil.info("The client has connected [{}] successful!", address.toString());
                 completableFuture.complete(future.channel());
             } else {
-                LogUtil.error("The client failed to connect to the server [{}],future", address.toString(),future);
+                LogUtil.error("The client failed to connect to the server [{}],future", address.toString(), future);
                 throw new IllegalStateException();
             }
         });
@@ -157,7 +159,7 @@ public class RpcSendingServiceAdapterImpl implements RpcSendingServiceAdapter {
     public Channel getChannel(InetSocketAddress inetSocketAddress) {
         Channel channel = addressChannelManager.get(inetSocketAddress);
         if (channel == null) {
-            channel =  connect(inetSocketAddress);
+            channel = connect(inetSocketAddress);
             addressChannelManager.set(inetSocketAddress, channel);
         }
         return channel;

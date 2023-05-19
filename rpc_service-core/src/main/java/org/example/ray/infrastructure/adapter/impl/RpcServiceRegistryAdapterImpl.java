@@ -8,10 +8,9 @@ import java.util.concurrent.ConcurrentHashMap;
 
 import org.apache.curator.framework.CuratorFramework;
 import org.example.ray.expection.RpcException;
-import org.example.ray.infrastructure.config.PropertiesReader;
 import org.example.ray.domain.RpcServiceConfig;
 import org.example.ray.infrastructure.adapter.RpcServiceRegistryAdapter;
-import org.example.ray.infrastructure.util.LogUtil;
+import org.example.ray.util.LogUtil;
 import org.example.ray.infrastructure.zk.util.CuratorUtils;
 import org.example.ray.domain.enums.RpcErrorMessageEnum;
 import org.example.ray.util.PropertiesFileUtil;

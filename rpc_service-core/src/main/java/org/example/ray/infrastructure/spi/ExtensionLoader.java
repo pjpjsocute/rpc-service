@@ -14,7 +14,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import org.apache.commons.lang3.StringUtils;
 
 import lombok.extern.slf4j.Slf4j;
-import org.example.ray.infrastructure.util.LogUtil;
+import org.example.ray.util.LogUtil;
 
 /**
  * @author zhoulei

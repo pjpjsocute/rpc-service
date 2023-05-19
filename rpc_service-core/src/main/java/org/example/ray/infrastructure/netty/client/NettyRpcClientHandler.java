@@ -1,4 +1,4 @@
-package org.example.ray.infrastructure.netty;
+package org.example.ray.infrastructure.netty.client;
 
 import java.net.InetSocketAddress;
 
@@ -10,8 +10,7 @@ import org.example.ray.domain.enums.CompressTypeEnum;
 import org.example.ray.domain.enums.SerializationTypeEnum;
 import org.example.ray.infrastructure.adapter.impl.RpcSendingServiceAdapterImpl;
 import org.example.ray.infrastructure.factory.SingletonFactory;
-import org.example.ray.infrastructure.netty.client.WaitingProcess;
-import org.example.ray.infrastructure.util.LogUtil;
+import org.example.ray.util.LogUtil;
 
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelFutureListener;
@@ -30,11 +29,11 @@ public class NettyRpcClientHandler extends SimpleChannelInboundHandler<RpcData> 
 
     private final RpcSendingServiceAdapterImpl adapter;
 
-    private final WaitingProcess               waitingProcess;
+    private final WaitingProcessRequestQueue   waitingProcessRequestQueue;
 
     public NettyRpcClientHandler() {
         this.adapter = SingletonFactory.getInstance(RpcSendingServiceAdapterImpl.class);
-        this.waitingProcess = SingletonFactory.getInstance(WaitingProcess.class);
+        this.waitingProcessRequestQueue = SingletonFactory.getInstance(WaitingProcessRequestQueue.class);
     }
 
     /**
@@ -77,7 +76,6 @@ public class NettyRpcClientHandler extends SimpleChannelInboundHandler<RpcData> 
     @Override
     protected void channelRead0(ChannelHandlerContext ctx, RpcData rpcData) throws Exception {
         LogUtil.info("Client receive message: [{}]", rpcData);
-        byte messageType = rpcData.getMessageType();
         RpcData rpcMessage = new RpcData();
         setupRpcMessage(rpcMessage);
 
@@ -85,7 +83,7 @@ public class NettyRpcClientHandler extends SimpleChannelInboundHandler<RpcData> 
             LogUtil.info("heart [{}]", rpcMessage.getData());
         } else if (rpcData.isResponse()) {
             RpcResponse<Object> rpcResponse = (RpcResponse<Object>)rpcData.getData();
-            waitingProcess.complete(rpcResponse);
+            waitingProcessRequestQueue.complete(rpcResponse);
         }
     }
 

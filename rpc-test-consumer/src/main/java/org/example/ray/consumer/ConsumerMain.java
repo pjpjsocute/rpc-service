@@ -2,8 +2,8 @@ package org.example.ray.consumer;
 
 import org.example.ray.annotation.SimpleRpcApplication;
 import org.springframework.boot.SpringApplication;
-import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.context.ConfigurableApplicationContext;
 
 /**
  * 
@@ -15,6 +15,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 @SimpleRpcApplication(basePackage = "org.example.ray.consumer")
 public class ConsumerMain {
     public static void main(String[] args) {
-        SpringApplication.run(ConsumerMain.class, args);
+        ConfigurableApplicationContext run = SpringApplication.run(ConsumerMain.class, args);
+
     }
 }

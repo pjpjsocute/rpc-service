@@ -1,10 +1,9 @@
 package org.example.ray.infrastructure.spring.registrar;
 
-import org.example.ray.annotation.RpcConsumer;
 import org.example.ray.annotation.RpcProvider;
 import org.example.ray.annotation.SimpleRpcApplication;
 import org.example.ray.infrastructure.spring.scanner.RpcBeanScanner;
-import org.example.ray.infrastructure.util.LogUtil;
+import org.example.ray.util.LogUtil;
 import org.springframework.beans.factory.support.BeanDefinitionRegistry;
 import org.springframework.context.ResourceLoaderAware;
 import org.springframework.context.annotation.ImportBeanDefinitionRegistrar;

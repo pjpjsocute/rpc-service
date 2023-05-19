@@ -12,8 +12,8 @@ import java.util.concurrent.ConcurrentHashMap;
  * @description: 存放已经发起的请求，等待响应结果，完成后完结该任务
  */
 
-public class WaitingProcess {
-    public WaitingProcess() {
+public class WaitingProcessRequestQueue {
+    public WaitingProcessRequestQueue() {
     }
 
     private static final Map<String, CompletableFuture<RpcResponse<Object>>> UNPROCESSED_RESPONSE_FUTURES = new ConcurrentHashMap<>();

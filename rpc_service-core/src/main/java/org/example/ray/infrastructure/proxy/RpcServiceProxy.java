@@ -11,7 +11,7 @@ import org.example.ray.domain.RpcResponse;
 import org.example.ray.domain.RpcServiceConfig;
 import org.example.ray.infrastructure.adapter.RpcSendingServiceAdapter;
 
-import org.example.ray.infrastructure.util.LogUtil;
+import org.example.ray.util.LogUtil;
 
 /**
  * @author zhoulei

@@ -12,7 +12,7 @@ import org.example.ray.infrastructure.adapter.impl.RpcServiceRegistryAdapterImpl
 import org.example.ray.infrastructure.factory.SingletonFactory;
 import org.example.ray.infrastructure.proxy.RpcServiceProxy;
 import org.example.ray.infrastructure.spi.ExtensionLoader;
-import org.example.ray.infrastructure.util.LogUtil;
+import org.example.ray.util.LogUtil;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.config.BeanPostProcessor;
 import org.springframework.stereotype.Component;

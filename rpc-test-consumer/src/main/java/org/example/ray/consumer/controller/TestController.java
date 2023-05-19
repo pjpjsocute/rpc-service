@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/test")
 public class TestController {
 
-    @RpcConsumer(group = "test", version = "1.0")
+    @RpcConsumer
     private TestInterface testInterface;
 
     @GetMapping("test1")

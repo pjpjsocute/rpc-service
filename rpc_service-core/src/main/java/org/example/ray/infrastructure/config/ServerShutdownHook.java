@@ -2,7 +2,6 @@ package org.example.ray.infrastructure.config;
 
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
-import org.example.ray.infrastructure.netty.server.NettyServer;
 import org.example.ray.infrastructure.util.ThreadPoolFactoryUtil;
 import org.example.ray.infrastructure.zk.util.CuratorUtils;
 import org.example.ray.util.PropertiesFileUtil;

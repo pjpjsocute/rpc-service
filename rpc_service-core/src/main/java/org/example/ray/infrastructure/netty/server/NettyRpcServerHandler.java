@@ -1,8 +1,6 @@
-package org.example.ray.infrastructure.netty;
+package org.example.ray.infrastructure.netty.server;
 
-import javax.annotation.Resource;
-
-import io.netty.handler.timeout.IdleState;
+import io.netty.channel.ChannelFutureListener;
 import org.example.ray.constants.RpcConstants;
 import org.example.ray.domain.RpcData;
 import org.example.ray.domain.RpcRequest;
@@ -10,11 +8,11 @@ import org.example.ray.domain.RpcResponse;
 import org.example.ray.domain.enums.CompressTypeEnum;
 import org.example.ray.domain.enums.SerializationTypeEnum;
 import org.example.ray.infrastructure.factory.SingletonFactory;
-import org.example.ray.infrastructure.util.LogUtil;
-import org.springframework.stereotype.Component;
+import org.example.ray.util.LogUtil;
 
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
+import io.netty.handler.timeout.IdleState;
 import io.netty.handler.timeout.IdleStateEvent;
 
 /**
@@ -22,7 +20,6 @@ import io.netty.handler.timeout.IdleStateEvent;
  * @create 2023/5/16
  * @description:
  */
-
 
 public class NettyRpcServerHandler extends SimpleChannelInboundHandler<RpcData> {
     /**
@@ -34,6 +31,7 @@ public class NettyRpcServerHandler extends SimpleChannelInboundHandler<RpcData> 
     public NettyRpcServerHandler() {
         this.rpcRequestHandler = SingletonFactory.getInstance(RpcRequestHandler.class);
     }
+
     /**
      * heart beat handle
      * 
@@ -45,7 +43,7 @@ public class NettyRpcServerHandler extends SimpleChannelInboundHandler<RpcData> 
     public void userEventTriggered(ChannelHandlerContext ctx, Object evt) throws Exception {
         // if the channel is free，close it
         if (evt instanceof IdleStateEvent) {
-            IdleState state = ((IdleStateEvent) evt).state();
+            IdleState state = ((IdleStateEvent)evt).state();
             if (state == IdleState.READER_IDLE) {
                 LogUtil.info("idle check happen, so close the connection");
                 ctx.close();
@@ -111,6 +109,7 @@ public class NettyRpcServerHandler extends SimpleChannelInboundHandler<RpcData> 
             rpcMessage.setData(rpcResponse);
             LogUtil.error("Not writable now, message dropped,message:{}", rpcRequest);
         }
+        ctx.writeAndFlush(rpcMessage).addListener(ChannelFutureListener.CLOSE_ON_FAILURE);
     }
 
     private boolean canBuildResponse(ChannelHandlerContext ctx) {
