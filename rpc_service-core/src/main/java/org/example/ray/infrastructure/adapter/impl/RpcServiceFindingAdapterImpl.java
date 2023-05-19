@@ -20,15 +20,20 @@ import org.example.ray.infrastructure.zk.util.CuratorUtils;
 
 public class RpcServiceFindingAdapterImpl implements RpcServiceFindingAdapter {
 
+    private final LoadBalanceService loadBalanceService;
+
+    public RpcServiceFindingAdapterImpl() {
+        this.loadBalanceService = ExtensionLoader.getExtensionLoader(LoadBalanceService.class).getExtension(LOAD_BALANCE);
+    }
+
     @Override
     public InetSocketAddress findServiceAddress(RpcRequest rpcRequest) {
         String serviceName = rpcRequest.fetchRpcServiceName();
         CuratorFramework zkClient = CuratorUtils.getZkClient();
         List<String> serviceAddresseList = CuratorUtils.getChildrenNodes(zkClient, serviceName);
 
-        LoadBalanceService extension =
-            ExtensionLoader.getExtensionLoader(LoadBalanceService.class).getExtension(LOAD_BALANCE);
-        String service = extension.selectServiceAddress(serviceAddresseList, rpcRequest);
+
+        String service = loadBalanceService.selectServiceAddress(serviceAddresseList, rpcRequest);
         String[] socketAddressArray = service.split(":");
         String host = socketAddressArray[0];
         int port = Integer.parseInt(socketAddressArray[1]);

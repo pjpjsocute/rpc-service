@@ -1,4 +1,4 @@
-package org.example.ray.provider;
+package org.example.ray.poservice;
 
 import org.example.ray.annotation.SimpleRpcApplication;
 import org.springframework.boot.SpringApplication;
@@ -10,8 +10,8 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
  * @author zhoulei
  * @description:
  */
-@SpringBootApplication(scanBasePackages = "org.example.ray.provider.application")
-@SimpleRpcApplication(basePackage = "org.example.ray.provider.application")
+@SpringBootApplication(scanBasePackages = "org.example.ray.poservice")
+@SimpleRpcApplication(basePackage = "org.example.ray.poservice.application")
 public class ProviderMain {
     public static void main(String[] args) {
         SpringApplication.run(ProviderMain.class, args);

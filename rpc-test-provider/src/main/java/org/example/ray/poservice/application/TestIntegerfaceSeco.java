@@ -1,4 +1,4 @@
-package org.example.ray.provider.application;
+package org.example.ray.poservice.application;
 
 import org.example.ray.annotation.RpcProvider;
 import org.example.ray.api.TestInterface;
@@ -10,7 +10,7 @@ import org.example.ray.model.request.RequestDto;
  * @create 2023/5/18
  * @description:
  */
-@RpcProvider(serviceName = "TestInterface",group = "test2", version = "1.0")
+@RpcProvider(serviceName = "TestInterface", group = "test2", version = "1.0")
 public class TestIntegerfaceSeco implements TestInterface {
     @Override
     public String testGetString(String name) {
@@ -20,9 +20,9 @@ public class TestIntegerfaceSeco implements TestInterface {
     @Override
     public ResponseDto testGetDto(RequestDto requestDto) {
         ResponseDto responseDto = ResponseDto.builder()
-                .addResult(requestDto.getInput1() + requestDto.getInput2() + "Second interface")
-                .multipleResult(requestDto.getInput1() * requestDto.getInput2() + "Second interface")
-                .build();
+            .addResult(requestDto.getInput1() + requestDto.getInput2() + "Second interface")
+            .multipleResult(requestDto.getInput1() * requestDto.getInput2() + "Second interface")
+            .build();
         return responseDto;
     }
 }

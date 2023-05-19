@@ -11,6 +11,7 @@ import org.springframework.context.annotation.ImportBeanDefinitionRegistrar;
 import org.springframework.core.annotation.AnnotationAttributes;
 import org.springframework.core.io.ResourceLoader;
 import org.springframework.core.type.AnnotationMetadata;
+import org.springframework.stereotype.Component;
 
 /**
  * @author zhoulei
@@ -23,6 +24,8 @@ public class CustomBeanScannerRegistrar implements ImportBeanDefinitionRegistrar
     private ResourceLoader resourceLoader;
 
     private static final String API_SCAN_PARAM = "basePackage";
+
+    private static final String SPRING_BEAN_BASE_PACKAGE = "org.example.ray";
 
     @Override
     public void registerBeanDefinitions(AnnotationMetadata importingClassMetadata, BeanDefinitionRegistry registry) {
@@ -40,11 +43,13 @@ public class CustomBeanScannerRegistrar implements ImportBeanDefinitionRegistrar
 //        //scan the package and register the bean
 //        RpcBeanScanner rpcConsumerBeanScanner = new RpcBeanScanner(registry, RpcConsumer.class);
         RpcBeanScanner rpcProviderBeanScanner = new RpcBeanScanner(registry, RpcProvider.class);
+        RpcBeanScanner springBeanScanner = new RpcBeanScanner(registry, Component.class);
         if (resourceLoader != null) {
-//            rpcConsumerBeanScanner.setResourceLoader(resourceLoader);
+            springBeanScanner.setResourceLoader(resourceLoader);
             rpcProviderBeanScanner.setResourceLoader(resourceLoader);
         }
         int rpcServiceCount = rpcProviderBeanScanner.scan(scanBasePackages);
+        springBeanScanner.scan(SPRING_BEAN_BASE_PACKAGE);
         LogUtil.info("rpcServiceScanner扫描的数量 [{}]", rpcServiceCount);
         LogUtil.info("scanning RpcConsumer annotated beans end");
     }

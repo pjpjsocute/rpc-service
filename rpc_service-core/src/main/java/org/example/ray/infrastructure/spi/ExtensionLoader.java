@@ -14,6 +14,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import org.apache.commons.lang3.StringUtils;
 
 import lombok.extern.slf4j.Slf4j;
+import org.example.ray.infrastructure.util.LogUtil;
 
 /**
  * @author zhoulei
@@ -93,7 +94,8 @@ public final class ExtensionLoader<T> {
                 EXTENSION_INSTANCES.putIfAbsent(clazz, clazz.newInstance());
                 instance = (T)EXTENSION_INSTANCES.get(clazz);
             } catch (Exception e) {
-                log.error(e.getMessage());
+                LogUtil.error("create extension instance error, class: {}, msg: {}", clazz, e.getMessage());
+                throw new RuntimeException(e);
             }
         }
         return instance;
@@ -130,7 +132,8 @@ public final class ExtensionLoader<T> {
                 }
             }
         } catch (IOException e) {
-            log.error(e.getMessage());
+            LogUtil.error("load directory to create class fail,classes:{},message:{}", extensionClasses, e.getMessage());
+            throw new RuntimeException(e);
         }
     }
 
@@ -158,13 +161,15 @@ public final class ExtensionLoader<T> {
                             extensionClasses.put(name, clazz);
                         }
                     } catch (ClassNotFoundException e) {
-                        log.error(e.getMessage());
+                        LogUtil.error("load Resource to create class fail,classes:{},message:{}", extensionClasses, e.getMessage());
+                        throw new RuntimeException(e);
                     }
                 }
 
             }
         } catch (IOException e) {
-            log.error(e.getMessage());
+            LogUtil.error("load Resource to create class fail,classes:{},message:{}", extensionClasses, e.getMessage());
+            throw new RuntimeException(e);
         }
     }
 }

@@ -1,1 +1,1 @@
-org.springframework.boot.autoconfigure.EnableAutoConfiguration=org.example.ray.infrastructure.config.AutoConfiguration
+#org.springframework.boot.autoconfigure.EnableAutoConfiguration=org.example.ray.infrastructure.config.AutoConfiguration

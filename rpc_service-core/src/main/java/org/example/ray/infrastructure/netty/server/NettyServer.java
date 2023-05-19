@@ -27,6 +27,8 @@ import io.netty.handler.logging.LoggingHandler;
 import io.netty.handler.timeout.IdleStateHandler;
 import io.netty.util.concurrent.DefaultEventExecutorGroup;
 
+import javax.annotation.PostConstruct;
+
 /**
  * @author zhoulei
  * @create 2023/5/17
@@ -35,10 +37,11 @@ import io.netty.util.concurrent.DefaultEventExecutorGroup;
 @Component
 public class NettyServer {
 
-    private final NettyRpcServerHandler nettyRpcServerHandler;
+    private NettyRpcServerHandler nettyRpcServerHandler;
+
 
     public NettyServer() {
-        this.nettyRpcServerHandler = SingletonFactory.getInstance(NettyRpcServerHandler.class);
+        nettyRpcServerHandler = SingletonFactory.getInstance(NettyRpcServerHandler.class);
     }
 
     public void start() {

@@ -5,6 +5,7 @@ import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.TimeUnit;
 
 import org.example.ray.constants.RpcConstants;
+import org.example.ray.domain.enums.ServiceDiscoveryEnum;
 import org.example.ray.infrastructure.factory.SingletonFactory;
 import org.example.ray.domain.RpcData;
 import org.example.ray.domain.RpcRequest;
@@ -18,6 +19,7 @@ import org.example.ray.infrastructure.netty.RpcMessageDecoder;
 import org.example.ray.infrastructure.netty.RpcMessageEncoder;
 import org.example.ray.infrastructure.netty.client.AddressChannelManager;
 import org.example.ray.infrastructure.netty.client.WaitingProcess;
+import org.example.ray.infrastructure.spi.ExtensionLoader;
 import org.example.ray.infrastructure.util.LogUtil;
 
 import io.netty.bootstrap.Bootstrap;
@@ -59,7 +61,7 @@ public class RpcSendingServiceAdapterImpl implements RpcSendingServiceAdapter {
 
 
     public RpcSendingServiceAdapterImpl() {
-        this.findingAdapter = SingletonFactory.getInstance(RpcServiceFindingAdapter.class);
+        this.findingAdapter = ExtensionLoader.getExtensionLoader(RpcServiceFindingAdapter.class).getExtension(ServiceDiscoveryEnum.ZK.getName());
         this.addressChannelManager = SingletonFactory.getInstance(AddressChannelManager.class);
         // initialize
         eventLoopGroup = new NioEventLoopGroup();
