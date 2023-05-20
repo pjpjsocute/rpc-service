@@ -25,3 +25,6 @@ You can use postman to call the controller service to test the rcp provided by t
 #### Rpc-test-provider
 
 Service provider, just start it directly
+
+####todo
+build a simple config service can config like load balance way, serialization way ，maybe can add s simple function about search service and test it
