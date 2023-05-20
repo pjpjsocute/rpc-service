@@ -98,6 +98,7 @@ public class NettyServer {
     }
 
     private void bindAndListen(ServerBootstrap serverBootstrap) throws UnknownHostException, InterruptedException {
+        LogUtil.info("netty server bind port:{} " , PropertiesFileUtil.readPortFromProperties());
         String host = InetAddress.getLocalHost().getHostAddress();
         ChannelFuture f = serverBootstrap.bind(host, PropertiesFileUtil.readPortFromProperties()).sync();
         f.channel().closeFuture().sync();
