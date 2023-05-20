@@ -1,1 +1,0 @@
-gzip=org.example.ray.infrastructure.compress.impl.GzipCompressService
