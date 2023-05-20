@@ -10,7 +10,17 @@ import org.example.ray.model.request.RequestDto;
  */
 public interface TestInterface {
 
+    /**
+     * get string
+     * @param name
+     * @return
+     */
     String testGetString(String name);
 
+    /**
+     * get dto
+     * @param requestDto
+     * @return
+     */
      ResponseDto testGetDto(RequestDto requestDto);
 }

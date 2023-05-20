@@ -77,34 +77,49 @@ public class RpcMessageDecoder extends LengthFieldBasedFrameDecoder {
      */
     private Object decode(ByteBuf byteBuf) {
         LogUtil.info("start decode");
-        // check magic code
         checkMagicCode(byteBuf);
         checkVersion(byteBuf);
 
-        // decode to rpc request
         int fullLength = byteBuf.readInt();
+        RpcData rpcMessage = decodeRpcMessage(byteBuf);
+
+        if (rpcMessage.isHeatBeatRequest()) {
+            return handleHeatBeatRequest(rpcMessage);
+        }
+
+        if (rpcMessage.isHeartBeatResponse()) {
+            return handleHeartBeatResponse(rpcMessage);
+        }
+
+        return handleNormalRequest(rpcMessage, byteBuf, fullLength);
+    }
+
+    private RpcData decodeRpcMessage(ByteBuf byteBuf) {
+        LogUtil.info("start decode RpcMessage data");
         byte messageType = byteBuf.readByte();
         byte codec = byteBuf.readByte();
         byte compress = byteBuf.readByte();
         int traceId = byteBuf.readInt();
 
-        RpcData rpcMessage = RpcData.builder()
-            .serializeMethodCodec(codec)
-            .traceId(traceId)
-            .compressType(compress)
-            .messageType(messageType)
-            .build();
+        return RpcData.builder()
+                .serializeMethodCodec(codec)
+                .traceId(traceId)
+                .compressType(compress)
+                .messageType(messageType)
+                .build();
+    }
 
-        if (rpcMessage.isHeatBeatRequest()) {
-            rpcMessage.setData(RpcConstants.PING);
-            return rpcMessage;
-        }
+    private RpcData handleHeatBeatRequest(RpcData rpcMessage) {
+        rpcMessage.setData(RpcConstants.PING);
+        return rpcMessage;
+    }
 
-        if (rpcMessage.isHeartBeatResponse()) {
-            rpcMessage.setData(RpcConstants.PONG);
-            return rpcMessage;
-        }
+    private RpcData handleHeartBeatResponse(RpcData rpcMessage) {
+        rpcMessage.setData(RpcConstants.PONG);
+        return rpcMessage;
+    }
 
+    private Object handleNormalRequest(RpcData rpcMessage, ByteBuf byteBuf, int fullLength) {
         int bodyLength = fullLength - RpcConstants.HEAD_LENGTH;
         if (bodyLength <= 0) {
             return rpcMessage;

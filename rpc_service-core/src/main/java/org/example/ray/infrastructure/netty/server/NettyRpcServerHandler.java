@@ -100,11 +100,11 @@ public class NettyRpcServerHandler extends SimpleChannelInboundHandler<RpcData> 
     private void
         buildAndSetRpcResponse(ChannelHandlerContext ctx, RpcRequest rpcRequest, RpcData rpcMessage, Object result) {
         if (canBuildResponse(ctx)) {
-            // 如果通道是活跃且可写，则构建成功的RPC响应
+            // If the channel is active and writable, a successful RPC response is constructed
             RpcResponse<Object> rpcResponse = RpcResponse.success(result, rpcRequest.getTraceId());
             rpcMessage.setData(rpcResponse);
         } else {
-            // 如果通道不可写，则构建失败的RPC响应
+            // Construct a failed RPC response if the channel is not writable
             RpcResponse<Object> rpcResponse = RpcResponse.fail();
             rpcMessage.setData(rpcResponse);
             LogUtil.error("Not writable now, message dropped,message:{}", rpcRequest);

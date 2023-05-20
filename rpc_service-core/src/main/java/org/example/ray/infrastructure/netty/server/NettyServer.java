@@ -1,6 +1,7 @@
 package org.example.ray.infrastructure.netty.server;
 
 import java.net.InetAddress;
+import java.net.UnknownHostException;
 import java.util.concurrent.TimeUnit;
 
 import org.example.ray.infrastructure.config.ServerShutdownHook;
@@ -40,59 +41,73 @@ public class NettyServer {
     public void start() {
         LogUtil.info("netty server init");
 
-        // first clear the registry
         ServerShutdownHook.getInstance().registerShutdownHook();
 
-        //init listenerGroup,listen to request and relate to workerGroup
-       EventLoopGroup listenerGroup = new NioEventLoopGroup(1);
-        //init workerGroup,handle the request:I/0
-        EventLoopGroup workerGroup = new NioEventLoopGroup();
-        //group used to for handel the request and response
-        DefaultEventExecutorGroup businessGroup = new DefaultEventExecutorGroup(
-                Runtime.getRuntime().availableProcessors() * 2,
-                ThreadPoolFactoryUtil.createThreadFactory("netty-server-business-group", false)
-        );;
-        LogUtil.info("netty server start");
-        //start the server
-        try {
-            ServerBootstrap serverBootstrap = new ServerBootstrap();
-            serverBootstrap.group(listenerGroup, workerGroup)
-                    .channel(NioServerSocketChannel.class)
-                    .childOption(ChannelOption.SO_KEEPALIVE, true)
-                    .childOption(ChannelOption.TCP_NODELAY, true)
-                    .option(ChannelOption.SO_BACKLOG, 128)
-                    .handler(new LoggingHandler(LogLevel.INFO))
-                    .childHandler(
-                            new ChannelInitializer<SocketChannel>() {
-                                @Override
-                                protected void initChannel(SocketChannel socketChannel) throws Exception {
-                                    ChannelPipeline pipeline = socketChannel.pipeline();
-                                    // 30s no read, 60s no write, 100s no read and write, close the connection
-                                    pipeline.addLast(new IdleStateHandler(30, 0, 0, TimeUnit.SECONDS));
-                                    pipeline.addLast(new RpcMessageEncoder());
-                                    pipeline.addLast(new RpcMessageDecoder());
-                                    pipeline.addLast(businessGroup, new NettyRpcServerHandler());
-                                }
-                            });
-            LogUtil.info("netty server start successfully");
-            LogUtil.info("netty server bind port");
-            String host = InetAddress.getLocalHost().getHostAddress();
-            // bind port
-            ChannelFuture f = serverBootstrap.bind(host, PropertiesFileUtil.readPortFromProperties()).sync();
-            // close
+        EventLoopGroup listenerGroup = initListenerGroup();
+        EventLoopGroup workerGroup = initWorkerGroup();
+        DefaultEventExecutorGroup businessGroup = initBusinessGroup();
 
-            f.channel().closeFuture().sync();
-            LogUtil.info("netty server close");
-        }catch (Exception e){
+        LogUtil.info("netty server start");
+
+        try {
+            ServerBootstrap serverBootstrap = configureServerBootstrap(listenerGroup, workerGroup, businessGroup);
+            bindAndListen(serverBootstrap);
+        } catch (Exception e) {
             LogUtil.error("occur exception when start server:", e);
-        }finally {
-            LogUtil.error("shutdown bossGroup and workerGroup");
-            listenerGroup.shutdownGracefully();
-            workerGroup.shutdownGracefully();
-            businessGroup.shutdownGracefully();
+        } finally {
+            shutdown(listenerGroup, workerGroup, businessGroup);
         }
 
-
     }
+
+    private EventLoopGroup initListenerGroup() {
+        return new NioEventLoopGroup(1);
+    }
+
+    private EventLoopGroup initWorkerGroup() {
+        return new NioEventLoopGroup();
+    }
+
+    private DefaultEventExecutorGroup initBusinessGroup() {
+        return new DefaultEventExecutorGroup(
+                Runtime.getRuntime().availableProcessors() * 2,
+                ThreadPoolFactoryUtil.createThreadFactory("netty-server-business-group", false)
+        );
+    }
+
+    private ServerBootstrap configureServerBootstrap(EventLoopGroup listenerGroup, EventLoopGroup workerGroup, DefaultEventExecutorGroup businessGroup) {
+        ServerBootstrap serverBootstrap = new ServerBootstrap();
+        serverBootstrap.group(listenerGroup, workerGroup)
+                .channel(NioServerSocketChannel.class)
+                .childOption(ChannelOption.SO_KEEPALIVE, true)
+                .childOption(ChannelOption.TCP_NODELAY, true)
+                .option(ChannelOption.SO_BACKLOG, 128)
+                .handler(new LoggingHandler(LogLevel.INFO))
+                .childHandler(new ChannelInitializer<SocketChannel>() {
+                    @Override
+                    protected void initChannel(SocketChannel socketChannel) throws Exception {
+                        ChannelPipeline pipeline = socketChannel.pipeline();
+                        pipeline.addLast(new IdleStateHandler(30, 0, 0, TimeUnit.SECONDS));
+                        pipeline.addLast(new RpcMessageEncoder());
+                        pipeline.addLast(new RpcMessageDecoder());
+                        pipeline.addLast(businessGroup, new NettyRpcServerHandler());
+                    }
+                });
+
+        return serverBootstrap;
+    }
+
+    private void bindAndListen(ServerBootstrap serverBootstrap) throws UnknownHostException, InterruptedException {
+        String host = InetAddress.getLocalHost().getHostAddress();
+        ChannelFuture f = serverBootstrap.bind(host, PropertiesFileUtil.readPortFromProperties()).sync();
+        f.channel().closeFuture().sync();
+    }
+
+    private void shutdown(EventLoopGroup listenerGroup, EventLoopGroup workerGroup, DefaultEventExecutorGroup businessGroup) {
+        listenerGroup.shutdownGracefully();
+        workerGroup.shutdownGracefully();
+        businessGroup.shutdownGracefully();
+    }
+
 
 }

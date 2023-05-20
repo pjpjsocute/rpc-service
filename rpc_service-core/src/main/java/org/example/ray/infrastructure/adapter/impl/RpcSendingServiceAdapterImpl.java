@@ -23,12 +23,7 @@ import org.example.ray.infrastructure.spi.ExtensionLoader;
 import org.example.ray.util.LogUtil;
 
 import io.netty.bootstrap.Bootstrap;
-import io.netty.channel.Channel;
-import io.netty.channel.ChannelFutureListener;
-import io.netty.channel.ChannelInitializer;
-import io.netty.channel.ChannelOption;
-import io.netty.channel.ChannelPipeline;
-import io.netty.channel.EventLoopGroup;
+import io.netty.channel.*;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.SocketChannel;
 import io.netty.channel.socket.nio.NioSocketChannel;
@@ -100,38 +95,44 @@ public class RpcSendingServiceAdapterImpl implements RpcSendingServiceAdapter {
 
     @Override
     public Object sendRpcRequest(RpcRequest rpcRequest) {
-        // init return value
         CompletableFuture<RpcResponse<Object>> result = new CompletableFuture<>();
-        // get server address
-        //
-        InetSocketAddress address = findingAdapter.findServiceAddress(rpcRequest);
-        // get a channel which mapper to a address
+        InetSocketAddress address = findServiceAddress(rpcRequest);
         Channel channel = fetchAndConnectChannel(address);
         if (channel.isActive()) {
-            // add to a waitList
-            waitingProcessRequestQueue.put(rpcRequest.getTraceId(), result);
+            addToProcessQueue(rpcRequest.getTraceId(), result);
+            RpcData rpcData = prepareRpcData(rpcRequest);
+            sendRpcData(channel, rpcData, result);
+        } else {
+            throw new IllegalStateException();
+        }
+        return result;
+    }
+    private InetSocketAddress findServiceAddress(RpcRequest rpcRequest) {
+        return findingAdapter.findServiceAddress(rpcRequest);
+    }
 
-            // can choose compress method,code method
-            RpcData rpcData = RpcData.builder()
+    private void addToProcessQueue(String traceId, CompletableFuture<RpcResponse<Object>> result) {
+        waitingProcessRequestQueue.put(traceId, result);
+    }
+
+    private RpcData prepareRpcData(RpcRequest rpcRequest) {
+        return RpcData.builder()
                 .data(rpcRequest)
                 .serializeMethodCodec(SerializationTypeEnum.HESSIAN.getCode())
                 .compressType(CompressTypeEnum.GZIP.getCode())
                 .messageType(RpcConstants.REQUEST_TYPE)
                 .build();
-
-            channel.writeAndFlush(rpcData).addListener((ChannelFutureListener)future -> {
-                if (future.isSuccess()) {
-                    LogUtil.info("client send message: [{}]", rpcData);
-                } else {
-                    future.channel().close();
-                    result.completeExceptionally(future.cause());
-                    LogUtil.error("Send failed:", future.cause());
-                }
-            });
-        } else {
-            throw new IllegalStateException();
-        }
-        return result;
+    }
+    private void sendRpcData(Channel channel, RpcData rpcData, CompletableFuture<RpcResponse<Object>> result) {
+        channel.writeAndFlush(rpcData).addListener((ChannelFutureListener)future -> {
+            if (future.isSuccess()) {
+                LogUtil.info("client send message: [{}]", rpcData);
+            } else {
+                future.channel().close();
+                result.completeExceptionally(future.cause());
+                LogUtil.error("Send failed:", future.cause());
+            }
+        });
     }
 
     private Channel fetchAndConnectChannel(InetSocketAddress address) {

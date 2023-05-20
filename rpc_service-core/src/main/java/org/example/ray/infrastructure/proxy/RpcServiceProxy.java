@@ -33,20 +33,9 @@ public class RpcServiceProxy implements InvocationHandler {
     @Override
     public Object invoke(Object proxy, Method method, Object[] args) {
         LogUtil.info("invoked method: [{}]", method.getName());
-        RpcRequest rpcRequest = RpcRequest.builder()
-            .methodName(method.getName())
-            .parameters(args)
-            .serviceName(method.getDeclaringClass().getName())
-            .paramTypes(method.getParameterTypes())
-            .traceId(UUID.randomUUID().toString())
-            .project(config.getProject())
-            .version(config.getVersion())
-            .group(config.getGroup())
-            .build();
+        RpcRequest rpcRequest = buildRequest(method,args);
 
         RpcResponse<Object> rpcResponse = null;
-        // Object o = sendingServiceAdapter.sendRpcRequest(rpcRequest);
-
         CompletableFuture<RpcResponse<Object>> completableFuture =
             (CompletableFuture<RpcResponse<Object>>)sendingServiceAdapter.sendRpcRequest(rpcRequest);
         try {
@@ -65,4 +54,18 @@ public class RpcServiceProxy implements InvocationHandler {
     public <T> T getProxy(Class<T> clazz) {
         return (T)Proxy.newProxyInstance(clazz.getClassLoader(), new Class<?>[] {clazz}, this);
     }
+
+     private RpcRequest buildRequest(Method method,Object[] args){
+         RpcRequest rpcRequest = RpcRequest.builder()
+                 .methodName(method.getName())
+                 .parameters(args)
+                 .serviceName(method.getDeclaringClass().getName())
+                 .paramTypes(method.getParameterTypes())
+                 .traceId(UUID.randomUUID().toString())
+                 .project(config.getProject())
+                 .version(config.getVersion())
+                 .group(config.getGroup())
+                 .build();
+        return rpcRequest;
+     }
 }

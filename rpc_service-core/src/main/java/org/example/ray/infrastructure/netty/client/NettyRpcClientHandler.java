@@ -4,7 +4,6 @@ import java.net.InetSocketAddress;
 
 import org.example.ray.constants.RpcConstants;
 import org.example.ray.domain.RpcData;
-import org.example.ray.domain.RpcRequest;
 import org.example.ray.domain.RpcResponse;
 import org.example.ray.domain.enums.CompressTypeEnum;
 import org.example.ray.domain.enums.SerializationTypeEnum;
@@ -92,21 +91,4 @@ public class NettyRpcClientHandler extends SimpleChannelInboundHandler<RpcData> 
         rpcMessage.setCompressType(CompressTypeEnum.GZIP.getCode());
     }
 
-    private void
-        buildAndSetRpcResponse(ChannelHandlerContext ctx, RpcRequest rpcRequest, RpcData rpcMessage, Object result) {
-        if (canBuildResponse(ctx)) {
-            // 如果通道是活跃且可写，则构建成功的RPC响应
-            RpcResponse<Object> rpcResponse = RpcResponse.success(result, rpcRequest.getTraceId());
-            rpcMessage.setData(rpcResponse);
-        } else {
-            // 如果通道不可写，则构建失败的RPC响应
-            RpcResponse<Object> rpcResponse = RpcResponse.fail();
-            rpcMessage.setData(rpcResponse);
-            LogUtil.error("Not writable now, message dropped,message:{}", rpcRequest);
-        }
-    }
-
-    private boolean canBuildResponse(ChannelHandlerContext ctx) {
-        return ctx.channel().isActive() && ctx.channel().isWritable();
-    }
 }

@@ -44,54 +44,64 @@ public class RpcMessageEncoder extends MessageToByteEncoder<RpcData> {
     @Override
     protected void encode(ChannelHandlerContext channelHandlerContext, RpcData rpcData, ByteBuf byteBuf) {
         try {
-            // write magic code and version 0-5
-            byteBuf.writeBytes(RpcConstants.MAGIC_NUMBER);
-            byteBuf.writeByte(RpcConstants.VERSION);
-
-            // marked full length index.
-            int fullLengthIndex = byteBuf.writerIndex();
-
-            // write placeholder for full length 9+
-            byteBuf.writerIndex(byteBuf.writerIndex() + 4);
-
-            // write message type
-            byteBuf.writeByte(rpcData.getMessageType());
-            // write codec
-            byteBuf.writeByte(rpcData.getSerializeMethodCodec());
-            // write compress
-            byteBuf.writeByte(rpcData.getCompressType());
-            // write requestId
-            byteBuf.writeInt(ATOMIC_INTEGER.getAndIncrement());
-
-            byte[] bodyBytes = null;
-            int fullLength = RpcConstants.HEAD_LENGTH;
-            // can send request
-            if (rpcData.canSendRequest()) {
-                LogUtil.info("serialize request start");
-                bodyBytes = ExtensionLoader.getExtensionLoader(SerializationService.class)
-                    .getExtension(SerializationTypeEnum.getName(rpcData.getSerializeMethodCodec()))
-                    .serialize(rpcData.getData());
-                LogUtil.info("serialize request end");
-
-                String compressName = CompressTypeEnum.getName(rpcData.getCompressType());
-                CompressService extension =
-                    ExtensionLoader.getExtensionLoader(CompressService.class).getExtension(compressName);
-                bodyBytes = extension.compress(bodyBytes);
-                fullLength += bodyBytes.length;
-            }
-
-            if (bodyBytes != null) {
-                byteBuf.writeBytes(bodyBytes);
-            }
-            int writeIndex = byteBuf.writerIndex();
-            byteBuf.writerIndex(fullLengthIndex);
-            byteBuf.writeInt(fullLength);
-            byteBuf.writerIndex(writeIndex);
+            //encode head,marked full length index
+            int fullLengthIndex = encodeHead(rpcData,byteBuf);
+            // encode body
+            int fullLength = encodeBody(rpcData, byteBuf);
+            // back fill full length
+            encodeLength(fullLengthIndex,fullLength,byteBuf);
         } catch (Exception e) {
             LogUtil.error("Encode request error:{},data:{}", e, rpcData);
             throw new RpcException(RpcErrorMessageEnum.REQUEST_ENCODE_FAIL.getCode(),
                 RpcErrorMessageEnum.REQUEST_ENCODE_FAIL.getMessage());
         }
 
+    }
+    private int encodeHead(RpcData rpcData,ByteBuf byteBuf){
+        // write magic code and version 0-5
+        byteBuf.writeBytes(RpcConstants.MAGIC_NUMBER);
+        byteBuf.writeByte(RpcConstants.VERSION);
+        // marked full length index.
+        int fullLengthIndex = byteBuf.writerIndex();
+        // write placeholder for full length 9+
+        byteBuf.writerIndex(byteBuf.writerIndex() + 4);
+        // write message type
+        byteBuf.writeByte(rpcData.getMessageType());
+        // write codec
+        byteBuf.writeByte(rpcData.getSerializeMethodCodec());
+        // write compress
+        byteBuf.writeByte(rpcData.getCompressType());
+        // write requestId
+        byteBuf.writeInt(ATOMIC_INTEGER.getAndIncrement());
+        return fullLengthIndex;
+    }
+
+    private int encodeBody(RpcData rpcData,ByteBuf byteBuf){
+        byte[] bodyBytes = null;
+        int fullLength = RpcConstants.HEAD_LENGTH;
+        if (rpcData.canSendRequest()) {
+            LogUtil.info("serialize request start");
+            bodyBytes = ExtensionLoader.getExtensionLoader(SerializationService.class)
+                    .getExtension(SerializationTypeEnum.getName(rpcData.getSerializeMethodCodec()))
+                    .serialize(rpcData.getData());
+            LogUtil.info("serialize request end");
+
+            String compressName = CompressTypeEnum.getName(rpcData.getCompressType());
+            CompressService extension =
+                    ExtensionLoader.getExtensionLoader(CompressService.class).getExtension(compressName);
+            bodyBytes = extension.compress(bodyBytes);
+            fullLength += bodyBytes.length;
+        }
+        if (bodyBytes != null) {
+            byteBuf.writeBytes(bodyBytes);
+        }
+        return fullLength;
+    }
+
+    private void encodeLength(int fullLengthIndex,int fullLength,ByteBuf byteBuf){
+        int writeIndex = byteBuf.writerIndex();
+        byteBuf.writerIndex(fullLengthIndex);
+        byteBuf.writeInt(fullLength);
+        byteBuf.writerIndex(writeIndex);
     }
 }
