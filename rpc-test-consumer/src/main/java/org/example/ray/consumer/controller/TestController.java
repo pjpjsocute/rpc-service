@@ -23,4 +23,16 @@ public class TestController {
         return testInterface.testGetString(input);
     }
 
+    @GetMapping("test4")
+    public String multithreadedTest(String input) {
+        for (int i = 0; i < 100; i++) {
+            new Thread(() -> {
+                for (int j = 0; j < 100; j++){
+                    testInterface.testGetString(input);
+                }
+            }).start();
+        }
+        return "success";
+    }
+
 }

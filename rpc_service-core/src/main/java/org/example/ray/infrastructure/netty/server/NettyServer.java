@@ -6,6 +6,7 @@ import java.util.concurrent.TimeUnit;
 import org.example.ray.infrastructure.config.ServerShutdownHook;
 import org.example.ray.infrastructure.coder.RpcMessageDecoder;
 import org.example.ray.infrastructure.coder.RpcMessageEncoder;
+import org.example.ray.infrastructure.netty.server.TokenBlock.DefaultTrafficBlockHandler;
 import org.example.ray.util.LogUtil;
 import org.example.ray.infrastructure.util.ThreadPoolFactoryUtil;
 import org.example.ray.util.PropertiesFileUtil;
@@ -71,6 +72,7 @@ public class NettyServer {
                                     pipeline.addLast(new IdleStateHandler(30, 0, 0, TimeUnit.SECONDS));
                                     pipeline.addLast(new RpcMessageEncoder());
                                     pipeline.addLast(new RpcMessageDecoder());
+                                    pipeline.addLast(new DefaultTrafficBlockHandler());
                                     pipeline.addLast(businessGroup, new NettyRpcServerHandler());
                                 }
                             });

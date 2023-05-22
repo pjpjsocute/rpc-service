@@ -29,16 +29,9 @@ public class CustomBeanScannerRegistrar implements ImportBeanDefinitionRegistrar
     @Override
     public void registerBeanDefinitions(AnnotationMetadata importingClassMetadata, BeanDefinitionRegistry registry) {
         //get the scan annotation and the bean package to be scanned
-        AnnotationAttributes annotationAttributes = AnnotationAttributes.fromMap(importingClassMetadata.getAnnotationAttributes(SimpleRpcApplication.class.getName()));
-        String[] scanBasePackages = new String[0];
-        if (annotationAttributes != null) {
-            scanBasePackages = annotationAttributes.getStringArray(API_SCAN_PARAM);
-        }
-        //user doesn't specify the package to scan,use the Application base package
-        if (scanBasePackages.length == 0) {
-            scanBasePackages = new String[]{((org.springframework.core.type.StandardAnnotationMetadata) importingClassMetadata).getIntrospectedClass().getPackage().getName()};
-        }
+        String[] scanBasePackages = fetchScanBasePackage(importingClassMetadata);
         LogUtil.info("scanning packages: [{}]", (Object) scanBasePackages);
+
 //        //scan the package and register the bean
 //        RpcBeanScanner rpcConsumerBeanScanner = new RpcBeanScanner(registry, RpcConsumer.class);
         RpcBeanScanner rpcProviderBeanScanner = new RpcBeanScanner(registry, RpcProvider.class);
@@ -55,6 +48,19 @@ public class CustomBeanScannerRegistrar implements ImportBeanDefinitionRegistrar
     @Override
     public void setResourceLoader(ResourceLoader resourceLoader) {
         this.resourceLoader = resourceLoader;
+    }
+
+    private String[] fetchScanBasePackage(AnnotationMetadata importingClassMetadata){
+        AnnotationAttributes annotationAttributes = AnnotationAttributes.fromMap(importingClassMetadata.getAnnotationAttributes(SimpleRpcApplication.class.getName()));
+        String[] scanBasePackages = new String[0];
+        if (annotationAttributes != null) {
+            scanBasePackages = annotationAttributes.getStringArray(API_SCAN_PARAM);
+        }
+        //user doesn't specify the package to scan,use the Application base package
+        if (scanBasePackages.length == 0) {
+            scanBasePackages = new String[]{((org.springframework.core.type.StandardAnnotationMetadata) importingClassMetadata).getIntrospectedClass().getPackage().getName()};
+        }
+        return scanBasePackages;
     }
 
 }

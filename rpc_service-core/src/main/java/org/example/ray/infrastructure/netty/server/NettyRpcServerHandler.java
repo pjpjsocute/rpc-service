@@ -74,6 +74,7 @@ public class NettyRpcServerHandler extends SimpleChannelInboundHandler<RpcData> 
         } else {
             handleRpcRequest(ctx, rpcData, rpcMessage);
         }
+        ctx.writeAndFlush(rpcMessage).addListener(ChannelFutureListener.CLOSE_ON_FAILURE);
     }
 
     private void setupRpcMessage(RpcData rpcMessage) {
@@ -109,7 +110,6 @@ public class NettyRpcServerHandler extends SimpleChannelInboundHandler<RpcData> 
             rpcMessage.setData(rpcResponse);
             LogUtil.error("Not writable now, message dropped,message:{}", rpcRequest);
         }
-        ctx.writeAndFlush(rpcMessage).addListener(ChannelFutureListener.CLOSE_ON_FAILURE);
     }
 
     private boolean canBuildResponse(ChannelHandlerContext ctx) {

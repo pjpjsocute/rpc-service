@@ -63,4 +63,9 @@ public class RpcConstants {
      */
     public static final String  LOAD_BALANCE            = "hash";
 
+    /**
+     * block capacity
+     */
+    public static final int     BLOCK_CAPACITY          = 50;
+
 }
