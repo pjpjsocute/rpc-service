@@ -34,12 +34,12 @@ public class RpcServiceRegistryAdapterImpl implements RpcServiceRegistryAdapter 
         try {
             // first get address and service
             String hostAddress = InetAddress.getLocalHost().getHostAddress();
-            // add service to map cache
-            registerServiceToMap(rpcServiceConfig);
             // add service to zk
             LogUtil.info("add service to zk,service name{},host:{}", rpcServiceConfig.fetchRpcServiceName(),hostAddress);
             registerServiceToZk(rpcServiceConfig.fetchRpcServiceName(),
                 new InetSocketAddress(hostAddress, PropertiesFileUtil.readPortFromProperties()));
+            // add service to map cache
+            registerServiceToMap(rpcServiceConfig);
         } catch (UnknownHostException e) {
             LogUtil.error("occur exception when getHostAddress", e);
             throw new RuntimeException(e);
