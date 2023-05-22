@@ -19,6 +19,7 @@ import com.google.common.util.concurrent.ThreadFactoryBuilder;
  * @author zhoulei
  * @create 2023/5/22
  * @description: token bucket manager
+ * todo: implement token bucket algorithm
  */
 public class TokenBucketManager {
 
