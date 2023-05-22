@@ -103,7 +103,7 @@ public class RpcMessageDecoder extends LengthFieldBasedFrameDecoder {
 
         return RpcData.builder()
                 .serializeMethodCodec(codec)
-                .traceId(traceId)
+                .requestId(traceId)
                 .compressType(compress)
                 .messageType(messageType)
                 .build();

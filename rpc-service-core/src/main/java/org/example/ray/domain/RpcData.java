@@ -33,7 +33,7 @@ public class RpcData {
     /**
      * request id
      */
-    private int    traceId;
+    private int    requestId;
     /**
      * request data
      */
