@@ -9,8 +9,8 @@
     <version>1.0-SNAPSHOT</version>
     <packaging>pom</packaging>
     <modules>
-        <module>rpc_service-core</module>
-        <module>rpc_service-support</module>
+        <module>rpc-service-core</module>
+        <module>rpc-service-support</module>
         <module>rpc-test-api</module>
         <module>rpc-test-provider</module>
         <module>rpc-test-consumer</module>
@@ -26,31 +26,14 @@
         <java.version>1.8</java.version>
         <revision>1.0.0</revision>
 
-        <curator-version>4.2.0</curator-version>
-        <spring.version>5.3.17</spring.version>
-
         <!--三方工具包-->
-        <ezia-common-remote.version>1.0.2</ezia-common-remote.version>
         <netty.version>4.1.42.Final</netty.version>
-        <jacoco.version>0.8.5</jacoco.version>
         <lombok.version>1.18.8</lombok.version>
         <commons-lang3.version>3.9</commons-lang3.version>
-        <powermock.version>2.0.0</powermock.version>
         <guava.version>30.1.1-jre</guava.version>
-        <junit.version>4.13.1</junit.version>
-        <junit-jupiter.version>5.8.2</junit-jupiter.version>
         <org.apache.commons.versioin>4.4</org.apache.commons.versioin>
-
-        <spring-cloud-dependencies.version>2021.0.1</spring-cloud-dependencies.version>
-        <cloud.bootstrap.version>3.0.2</cloud.bootstrap.version>
-        <tk.mybatis.version>2.1.5</tk.mybatis.version>
-        <spring.openfeign.version>3.1.1</spring.openfeign.version>
-        <spring.test.version>5.3.17</spring.test.version>
-
-        <io.springfox.version>3.0.0</io.springfox.version>
-        <org.powermock.version>2.0.2</org.powermock.version>
-
-        <mysql.connector.version>8.0.28</mysql.connector.version>
+        <hessian.version>4.0.65</hessian.version>
+        <curator-version>4.2.0</curator-version>
     </properties>
 
     <!-- spring boot start -->
@@ -62,14 +45,7 @@
     </parent>
 
     <dependencies>
-        <!-- https://mvnrepository.com/artifact/com.caucho/hessian -->
-        <dependency>
-            <groupId>com.caucho</groupId>
-            <artifactId>hessian</artifactId>
-            <version>4.0.65</version>
-        </dependency>
-
-        <!--三方框架包-->
+        <!--springboot-->
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-log4j2</artifactId>
@@ -89,40 +65,19 @@
         </dependency>
         <!-- support web development end -->
 
-        <!-- support test start -->
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-test</artifactId>
-            <scope>test</scope>
-            <exclusions>
-                <exclusion>
-                    <artifactId>junit-jupiter-api</artifactId>
-                    <groupId>org.junit.jupiter</groupId>
-                </exclusion>
-            </exclusions>
-        </dependency>
-        <!-- support test end -->
-
         <!-- spring boot health check start -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-actuator</artifactId>
             <exclusions>
-                <!-- 去除旧log依赖 -->
+                <!-- remove log -->
                 <exclusion>
                     <groupId>org.springframework.boot</groupId>
                     <artifactId>spring-boot-starter-logging</artifactId>
                 </exclusion>
             </exclusions>
         </dependency>
-        <!-- spring boot health check end -->
 
-        <!-- spring cloud config service start -->
-        <!--        <dependency>-->
-        <!--            <groupId>org.springframework.cloud</groupId>-->
-        <!--            <artifactId>spring-cloud-starter-config</artifactId>-->
-        <!--        </dependency>-->
-        <!-- spring cloud config service end -->
 
         <!-- prometheus start -->
         <dependency>
@@ -140,6 +95,7 @@
     </dependencies>
 
     <dependencyManagement>
+        <!-- third part-->
         <dependencies>
             <dependency>
                 <groupId>com.google.guava</groupId>
@@ -151,39 +107,6 @@
                 <groupId>org.apache.commons</groupId>
                 <artifactId>commons-lang3</artifactId>
                 <version>${commons-lang3.version}</version>
-            </dependency>
-
-            <dependency>
-                <groupId>org.projectlombok</groupId>
-                <artifactId>lombok</artifactId>
-                <version>${lombok.version}</version>
-            </dependency>
-
-            <dependency>
-                <groupId>junit</groupId>
-                <artifactId>junit</artifactId>
-                <version>${junit.version}</version>
-            </dependency>
-
-            <dependency>
-                <groupId>org.junit.jupiter</groupId>
-                <artifactId>junit-jupiter-api</artifactId>
-                <version>${junit-jupiter.version}</version>
-                <scope>test</scope>
-            </dependency>
-
-            <dependency>
-                <groupId>org.powermock</groupId>
-                <artifactId>powermock-module-junit4</artifactId>
-                <version>${org.powermock.version}</version>
-                <scope>test</scope>
-            </dependency>
-
-            <dependency>
-                <groupId>org.powermock</groupId>
-                <artifactId>powermock-api-mockito2</artifactId>
-                <version>${org.powermock.version}</version>
-                <scope>test</scope>
             </dependency>
 
             <dependency>
@@ -210,13 +133,26 @@
                 <version>${curator-version}</version>
             </dependency>
 
+            <!--netty-->
             <dependency>
                 <groupId>io.netty</groupId>
                 <artifactId>netty-all</artifactId>
                 <version>${netty.version}</version>
             </dependency>
 
+            <!-- https://mvnrepository.com/artifact/com.caucho/hessian -->
+            <dependency>
+                <groupId>com.caucho</groupId>
+                <artifactId>hessian</artifactId>
+                <version>${hessian.version}</version>
+            </dependency>
 
+            <!-- third dependency-->
+            <dependency>
+                <groupId>org.projectlombok</groupId>
+                <artifactId>lombok</artifactId>
+                <version>${lombok.version}</version>
+            </dependency>
         </dependencies>
     </dependencyManagement>
     <build>

@@ -7,8 +7,8 @@
         <sourceOutputDir name="target/generated-sources/annotations" />
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
-        <module name="rpc_service-support" />
-        <module name="rpc_service-core" />
+        <module name="rpc-service-support" />
+        <module name="rpc-service-core" />
         <module name="rpc-test-provider" />
         <module name="rpc-test-consumer" />
         <module name="rpc-test-api" />
@@ -17,16 +17,20 @@
     <bytecodeTargetLevel>
       <module name="registration" target="1.8" />
       <module name="rpc_service-api" target="1.8" />
+      <module name="rpc_service-core" target="1.8" />
       <module name="rpc_service-example-consumer" target="1.8" />
       <module name="rpc_service-example-provider" target="1.8" />
       <module name="rpc_service-ExampleComsumer" target="1.8" />
       <module name="rpc_service-registration" target="1.8" />
+      <module name="rpc_service-support" target="1.8" />
     </bytecodeTargetLevel>
   </component>
   <component name="JavacSettings">
     <option name="ADDITIONAL_OPTIONS_OVERRIDE">
       <module name="registration" options="-parameters" />
       <module name="rpc-service" options="-parameters" />
+      <module name="rpc-service-core" options="-parameters" />
+      <module name="rpc-service-support" options="-parameters" />
       <module name="rpc-test-api" options="-parameters" />
       <module name="rpc-test-consumer" options="-parameters" />
       <module name="rpc-test-provider" options="-parameters" />
