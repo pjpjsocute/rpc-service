@@ -22,8 +22,11 @@ Service provider, just start it directly
 
 ###START
 start zookeeper:```./zkCli.sh -server```
+
 start rpc-test-consumer
+
 start rpc-test-privider
+
 invoke controller in rpc-test-consumer by postman or other api test tool
 
 
