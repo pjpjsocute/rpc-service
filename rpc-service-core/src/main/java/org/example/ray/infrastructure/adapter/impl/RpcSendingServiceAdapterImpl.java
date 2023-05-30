@@ -4,6 +4,7 @@ import java.net.InetSocketAddress;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.TimeUnit;
 
+import lombok.extern.slf4j.Slf4j;
 import org.example.ray.constants.RpcConstants;
 import org.example.ray.domain.RpcData;
 import org.example.ray.domain.RpcRequest;
@@ -36,7 +37,7 @@ import io.netty.handler.timeout.IdleStateHandler;
  * @create 2023/5/16
  * @description:
  */
-
+@Slf4j
 public class RpcSendingServiceAdapterImpl implements RpcSendingServiceAdapter {
 
     /**
@@ -103,6 +104,7 @@ public class RpcSendingServiceAdapterImpl implements RpcSendingServiceAdapter {
             RpcData rpcData = prepareRpcData(rpcRequest);
             sendRpcData(channel, rpcData, result);
         } else {
+            log.error("Send request[{}] failed", rpcRequest);
             throw new IllegalStateException();
         }
         return result;

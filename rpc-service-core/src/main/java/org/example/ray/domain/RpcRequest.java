@@ -1,12 +1,11 @@
 package org.example.ray.domain;
 
+import java.io.Serializable;
+
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-
-
-import java.io.Serializable;
 
 /**
  * @author zhoulei
@@ -23,40 +22,40 @@ public class RpcRequest implements Serializable {
     /**
      * traceId
      */
-    private String traceId;
+    private String            traceId;
     /**
      * interface name
      */
-    private String serviceName;
+    private String            serviceName;
     /**
      * method name
      */
-    private String methodName;
+    private String            methodName;
     /**
      * parameters
      */
-    private Object[] parameters;
+    private Object[]          parameters;
     /**
      * parameter types
      */
-    private Class<?>[] paramTypes;
+    private Class<?>[]        paramTypes;
     /**
      * version
      */
-    private String version;
+    private String            version;
     /**
      * group
      */
-    private String project;
+    private String            project;
 
-    private String group;
+    private String            group;
 
     /**
-     * generate service name,use to distinguish different service,and * can be split to get the service name
+     * generate service name,use to distinguish different service,and * can be
+     * split to get the service name
      */
     public String fetchRpcServiceName() {
-        return this.getProject() +"*"+this.getGroup()+"*"+ this.getServiceName() +"*"+ this.getVersion();
+        return this.getProject() + "*" + this.getGroup() + "*" + this.getServiceName() + "*" + this.getVersion();
     }
-
 
 }
