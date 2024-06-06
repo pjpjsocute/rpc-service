@@ -8,7 +8,6 @@
         <groupId>org.example.ray</groupId>
         <artifactId>rpc_service2-springboot-starter</artifactId>
         <version>1.0-SNAPSHOT</version>
-        <relativePath/>
     </parent>
 
     <version>1.0-SNAPSHOT</version>
