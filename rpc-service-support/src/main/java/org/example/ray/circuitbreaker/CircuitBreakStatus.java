@@ -4,18 +4,18 @@ package org.example.ray.circuitbreaker;
  * @author zhoulei
  * @create 2024/6/5
  * @description:
- *        +---------+               +--------+
+ *         +---------+               +--------+
  *         |         |  (failures)   |        |
  *         | CLOSED  +-------------->+  OPEN  |
  *         |         |               |        |
  *         +----+----+               +---+----+
- *           ^  |                        |   ^
- *  (success)|  | (timeout)              |   |
- *           |  v                        |   |
- *         +----+----+                   |   |(failures)
- *         |         |  (successes)      |   |
- *         | HALF-   +<------------------+   |
- *         |  OPEN   |-----------------------+
+ *            ^  |                     |   ^
+ *  (success) |  | (timeout)           |   |
+ *            |  v                     |   |
+ *         +----+----+                 |   |(failures)
+ *         |         |  (successes)    |   |
+ *         | HALF-   +<----------------+   |
+ *         |  OPEN   |---------------------+
  *         |         |
  *         +----+----+
  *
